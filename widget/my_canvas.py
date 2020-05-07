@@ -1,14 +1,18 @@
 # -*- coding:utf-8 -*-
 import sys
 import logging
+import time
+from pprint import pprint
 
 from PyQt5.QtCore import QRectF, QPoint, QSize, Qt, pyqtSignal, pyqtSlot, QPointF
 
 # QtCore.Signal()
+from qtpy import QtWidgets
+
 logger = logging.getLogger(__name__)
 
 from PyQt5 import QtGui
-from PyQt5.QtGui import QPaintEvent, QPixmap, QResizeEvent, QPainterPath
+from PyQt5.QtGui import QPaintEvent, QPixmap, QResizeEvent, QPainterPath, QCursor
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QGridLayout, QApplication, QSizePolicy, QMessageBox, \
     QCheckBox
 
@@ -385,9 +389,9 @@ class MaskLabelLayer(BaseLabelLayer):
                 path.closeSubpath()
 
                 logger.info(f"{self.objectName()}---鼠标位置{(self.mouse_x, self.mouse_y)}")
-                logger.info(
-                    f"path.contains(QPointF(self.mouse_x, self.mouse_x))={path.contains(QPointF(self.mouse_x, self.mouse_x))}")
+                logger.info(f"判断鼠标当前位置是否在路径内={path.contains(QPointF(self.mouse_x, self.mouse_x))}")
                 logger.info(f"-----------------------------------------------------------")
+                # 判断鼠标当前位置是否在路径内
                 if path.contains(QPointF(self.mouse_x, self.mouse_y)):
                     pen.setWidth(1)
                 else:
@@ -415,5 +419,11 @@ if __name__ == '__main__':
     # win = ImageCanvas()
     win = MainWidget()
     win.show()
+    # time.sleep(2)
+    # win.setCursor(QCursor(Qt.BusyCursor))
+    QtWidgets.QApplication.setOverrideCursor(Qt.BusyCursor)
+    # time.sleep(2)
+    # win.unsetCursor()
+    # pprint(win.cursor())
 
     sys.exit(app.exec_())
