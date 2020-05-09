@@ -1,5 +1,4 @@
 # -*- coding:utf-8 -*-
-from collections import OrderedDict
 
 xxx = {2587: {'product_id': 2587, 'product_code': '1', 'inference_result': 0,
               'received_img_step_el': ['TP1', 'TP2', 'TP3'], 'received_img_step_vi': [],
@@ -80,11 +79,24 @@ xxx = {2587: {'product_id': 2587, 'product_code': '1', 'inference_result': 0,
               'defect_intelligent_vi': {'TP1': [], 'TP2': [], 'TP3': []}}}
 
 if __name__ == '__main__':
-    a_dict = OrderedDict()
+    # a_dict = OrderedDict()
+    #
+    # a_dict["xxx"] = "hello_1"
+    # a_dict["yyy"] = "hello_2"
+    #
+    # a_dict.pop("xxx")
+    #
+    # print(a_dict)
 
-    a_dict["xxx"] = "hello_1"
-    a_dict["yyy"] = "hello_2"
+    # - - - - - - - - - - - - - - - - - -
 
-    a_dict.pop("xxx")
+    max_progress = 6
+    x = (num for num in range(1, max_progress + 1))
 
-    print(a_dict)
+    print(next(x))
+    print(next(x))
+    print(next(x))
+    print(next(x))
+    print(next(x))
+    print(next(x))
+    # print(next(x))
