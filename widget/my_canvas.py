@@ -44,6 +44,7 @@ class MainWidget(QWidget):
         self.bbox_checkbox_state_changed_event()
         self.mask_checkbox_state_changed_event()
 
+        # 事件/信号绑定
         self.binding_event_and_signal()
 
     def binding_event_and_signal(self):
@@ -53,6 +54,7 @@ class MainWidget(QWidget):
     def bbox_checkbox_state_changed_event(self):
         """"""
         if self.label_layer_control_panel.bbox_checkbox.isChecked():
+            self.el_img_canvas.bbox_label_layer.raise_()
             self.el_img_canvas.bbox_label_layer.show()
         else:
             self.el_img_canvas.bbox_label_layer.hide()
@@ -60,6 +62,7 @@ class MainWidget(QWidget):
     def mask_checkbox_state_changed_event(self):
         """"""
         if self.label_layer_control_panel.mask_checkbox.isChecked():
+            self.el_img_canvas.mask_label_layer.raise_()
             self.el_img_canvas.mask_label_layer.show()
         else:
             self.el_img_canvas.mask_label_layer.hide()
@@ -131,17 +134,20 @@ class ImageCanvas(QWidget):
         self.init_data()
 
     def init_data(self):
+        """"""
+        # 测试你用图像
         with open("../images/EL_TP3.jpg", "rb") as f:
             image_bytes = f.read()
         self.load_image(image_bytes=image_bytes)
 
     def binding_event_and_signal(self):
+        """绑定事件/信号"""
+        # 设置缩放比例
         self.change_img_ratio_signal.connect(self.bbox_label_layer.set_ratio)
         self.change_img_ratio_signal.connect(self.mask_label_layer.set_ratio)
-
-        self.bbox_label_layer.update_current_mouse_position_signal.connect(self.mask_label_layer.set_mouse_position)
-
-        self.mask_label_layer.update_current_mouse_position_signal.connect(self.bbox_label_layer.set_mouse_position)
+        # 设置鼠标位置
+        self.bbox_label_layer.set_mouse_position_signal.connect(self.mask_label_layer.set_mouse_position_handler)
+        self.mask_label_layer.set_mouse_position_signal.connect(self.bbox_label_layer.set_mouse_position_handler)
 
     def load_image(self, image_bytes=None):
         """ 加载背景图的方法 """
@@ -240,7 +246,7 @@ class BaseLabelLayer(QWidget):
     """标注图层-基类"""
 
     # 鼠标位置变化
-    update_current_mouse_position_signal = pyqtSignal(int, int)
+    set_mouse_position_signal = pyqtSignal(int, int)
 
     def __init__(self, *args, parent=None):
         super().__init__(parent, *args)
@@ -316,18 +322,21 @@ class BaseLabelLayer(QWidget):
             pos = ev.pos()
             self.mouse_x = pos.x()
             self.mouse_y = pos.y()
-            self.update_current_mouse_position_signal.emit(self.mouse_x, self.mouse_y)
-            # logger.info(f"{self.objectName()}---mouse_x_y = {(self.mouse_x,self.mouse_y)}")
+            logger.info(f"{self.objectName()}---mouse_x_y = {(self.mouse_x,self.mouse_y)}")
+            # # 不发信号的话，其他的图层中的标签的线宽就不会因为鼠标移动而变化
+            # self.set_mouse_position_signal.emit(self.mouse_x, self.mouse_y)
+            self.update()
         except Exception as e:
             logger.error(f"Error:{e}", exc_info=True)
             message_box = QMessageBox(self)
             message_box.warning(self, "警告", str(e), QMessageBox.Yes, QMessageBox.Yes)
 
     @pyqtSlot(int, int)
-    def set_mouse_position(self, x, y):
+    def set_mouse_position_handler(self, x, y):
         """设置鼠标位置"""
         self.mouse_x = x
         self.mouse_y = y
+        logger.info(f"{self.objectName()}---set_mouse_position = {(self.mouse_x,self.mouse_y)}")
         self.update()
 
 
@@ -348,7 +357,9 @@ class BBoxLabelLayer(BaseLabelLayer):
             h = rect[3] * self._ratio
 
             rect_f = QRectF(x, y, w, h)
+            logger.info(f"{self.objectName()}---鼠标位置{(self.mouse_x, self.mouse_y)}")
             if rect_f.contains(QPointF(self.mouse_x, self.mouse_y)):
+                logger.info(f"判断鼠标当前位置是否在路径内={rect_f.contains(QPointF(self.mouse_x, self.mouse_y))}")
                 pen.setWidth(1)
             else:
                 pen.setWidth(2)
@@ -356,6 +367,7 @@ class BBoxLabelLayer(BaseLabelLayer):
             pen.setColor(QtGui.QColor(0, 0, 255))
             self._painter.setPen(pen)
             self._painter.drawRect(rect_f)
+            logger.info(f"-----------------------------------------------------------")
 
 
 class MaskLabelLayer(BaseLabelLayer):
@@ -389,15 +401,15 @@ class MaskLabelLayer(BaseLabelLayer):
                 path.closeSubpath()
 
                 logger.info(f"{self.objectName()}---鼠标位置{(self.mouse_x, self.mouse_y)}")
-                logger.info(f"判断鼠标当前位置是否在路径内={path.contains(QPointF(self.mouse_x, self.mouse_x))}")
-                logger.info(f"-----------------------------------------------------------")
                 # 判断鼠标当前位置是否在路径内
                 if path.contains(QPointF(self.mouse_x, self.mouse_y)):
+                    logger.info(f"判断鼠标当前位置是否在路径内={path.contains(QPointF(self.mouse_x, self.mouse_y))}")
                     pen.setWidth(1)
                 else:
                     pen.setWidth(2)
                 self._painter.setPen(pen)
                 self._painter.drawPath(path)
+                logger.info(f"+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
         except Exception as e:
             logger.error(f"Error:{e}", exc_info=True)
             message_box = QMessageBox(self)
@@ -421,7 +433,7 @@ if __name__ == '__main__':
     win.show()
     # time.sleep(2)
     # win.setCursor(QCursor(Qt.BusyCursor))
-    QtWidgets.QApplication.setOverrideCursor(Qt.BusyCursor)
+    # QtWidgets.QApplication.setOverrideCursor(Qt.BusyCursor)
     # time.sleep(2)
     # win.unsetCursor()
     # pprint(win.cursor())
