@@ -1,10 +1,9 @@
 # -*- coding:utf-8 -*-
 import math
-from datetime import datetime, date, timedelta
-import calendar
+from datetime import datetime, timedelta
 
 
-class CalendarUtils:
+class CalendarUtils(object):
     """
     日期工具类
     """
@@ -12,22 +11,27 @@ class CalendarUtils:
     @classmethod
     def delta_day(cls, delta=0):
         """
-        :param delta:   偏移量
-        :return:        0今天, -1昨天, -2前天, 1明天 ...
+        :param delta: 日期偏移量(0今天, -1昨天, -2前天, 1明天 ...)
+        :return:
         """
-        return datetime.now() + timedelta(days=delta)
+        day = datetime.now() + timedelta(days=delta)
+        day = day.replace(hour=0, minute=0, second=0, microsecond=0)
+        return day
 
     @classmethod
     def delta_week(cls, delta=0):
         """
-        :param delta:   偏移量
-        :return:        0本周, -1上周, 1下周 ...
+        :param delta: 周偏移量(0本周, -1上周, 1下周 ...)
+        :return:
         """
         now = datetime.now()
         week = now.weekday()
+
         _from = now - timedelta(days=week - (7 * delta))
+        _from = _from.replace(hour=0, minute=0, second=0, microsecond=0)
+
         _to = now + timedelta(days=(6 - week) + (7 * delta))
-        _to = _to.replace(hour=23, minute=59, second=59)
+        _to = _to.replace(hour=23, minute=59, second=59, microsecond=99999)
         return _from, _to
 
     @classmethod
@@ -40,7 +44,7 @@ class CalendarUtils:
         now = datetime.now()
         _from = datetime(*cls.target_month(now.year, now.month, delta), 1)
         _to = datetime(*cls.target_month(_from.year, _from.month, 1), 1) - timedelta(days=1)
-        _to = _to.replace(hour=23, minute=59, second=59)
+        _to = _to.replace(hour=23, minute=59, second=59, microsecond=99999)
         return _from, _to
 
     @classmethod
@@ -49,30 +53,33 @@ class CalendarUtils:
         :param delta: 季度偏移量(0本季度, -1上季度, 1下季度, 下下个季度...)
         :return: (目标季度的起始日期，目标季度的结束日期)
         """
-        now = datetime.now().replace(month=4)
+        now = datetime.now()
+
+        # 调用接口的日期所在的年月
         year, month = cls.target_month(now.year, now.month, delta * 3)
-        # print(f"{year}年,{month}月")
 
+        # 调用接口的日期所在的季度
         quarter = math.ceil(month / 3)
-        # print(f"季度 = {quarter}")
 
+        # 调用接口的日期所在的季度的首月
         end_month_of_quarter = quarter * 3
+
+        # 调用接口的日期所在的季度的末月
         start_month_of_quarter = end_month_of_quarter - 2
-        # print(f"季度起始月份：{start_month_of_quarter}, 季度结束月份：{end_month_of_quarter}")
 
         _from = datetime(year, start_month_of_quarter, 1)
         if end_month_of_quarter == 12:
             year += 1
             end_month_of_quarter = 0
         _to = datetime(year, end_month_of_quarter + 1, 1) - timedelta(days=1)
-        _to = _to.replace(hour=23, minute=59, second=59)
+        _to = _to.replace(hour=23, minute=59, second=59, microsecond=99999)
         return _from, _to
 
     @classmethod
     def delta_year(cls, delta=0):
         """
-        :param delta:   偏移量
-        :return:        0今年, -1去年, 1明年 ...
+        :param delta: 年偏移量(0今年, -1去年, 1明年 ...)
+        :return:
         """
         now = datetime.now()
         start_year = now.year + delta
@@ -80,7 +87,7 @@ class CalendarUtils:
             start_year = 1
         _from = datetime(start_year, 1, 1)
         _to = datetime(_from.year + 1, 1, 1) - timedelta(days=1)
-        _to = _to.replace(hour=23, minute=59, second=59)
+        _to = _to.replace(hour=23, minute=59, second=59, microsecond=99999)
         return _from, _to
 
     @classmethod
@@ -113,6 +120,7 @@ class CalendarUtils:
 
 
 if __name__ == '__main__':
+    """下面的测试代码是2020年05月29日编写的"""
     print('当前日期: ', datetime.now())
     print('*' * 40)
     print('今天: ', CalendarUtils.delta_day())
