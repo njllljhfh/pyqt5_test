@@ -50,9 +50,6 @@ class MyFilter(Filter):
             print("msg_dict = {}, ".format(msg_dict))
             print("type(msg_dict) = {}, ".format(msg_dict))
 
-            xxx = json.loads(str({'a': 1}))
-            print("xxx = {}, ".format(xxx))
-
         print("- - - - - - log filter end- - - - - -")
 
         return True  # 会输入log到控制台
