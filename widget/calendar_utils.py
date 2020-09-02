@@ -1,4 +1,5 @@
 # -*- coding:utf-8 -*-
+# __author__ = njl
 import math
 from datetime import datetime, timedelta
 
@@ -9,18 +10,22 @@ class CalendarUtils(object):
     """
 
     @classmethod
-    def delta_day(cls, delta=0):
+    def delta_day(cls, delta=0) -> (datetime, datetime):
         """
+        根据偏移量获取日期
         :param delta: 日期偏移量(0今天, -1昨天, -2前天, 1明天 ...)
         :return:
         """
-        day = datetime.now() + timedelta(days=delta)
-        day = day.replace(hour=0, minute=0, second=0, microsecond=0)
-        return day
+        _from = datetime.now() + timedelta(days=delta)
+        _from = _from.replace(hour=0, minute=0, second=0, microsecond=0)
+
+        _to = _from.replace(hour=23, minute=59, second=59, microsecond=99999)
+        return _from, _to
 
     @classmethod
-    def delta_week(cls, delta=0):
+    def delta_week(cls, delta=0) -> (datetime, datetime):
         """
+        根据偏移量获取目标周的日期范围
         :param delta: 周偏移量(0本周, -1上周, 1下周 ...)
         :return:
         """
@@ -35,8 +40,9 @@ class CalendarUtils(object):
         return _from, _to
 
     @classmethod
-    def delta_month(cls, delta=0):
+    def delta_month(cls, delta=0) -> (datetime, datetime):
         """
+        根据偏移量获取目标月的日期范围
         :param delta: 月份偏移量(0本月, -1上月, 1下月, 下下个月...)
         :return: (目标月的起始日期，目标月的结束日期)
         """
@@ -48,8 +54,9 @@ class CalendarUtils(object):
         return _from, _to
 
     @classmethod
-    def delta_quarter(cls, delta=0):
+    def delta_quarter(cls, delta=0) -> (datetime, datetime):
         """
+        根据偏移量获取目标季度的日期范围
         :param delta: 季度偏移量(0本季度, -1上季度, 1下季度, 下下个季度...)
         :return: (目标季度的起始日期，目标季度的结束日期)
         """
@@ -59,7 +66,7 @@ class CalendarUtils(object):
         year, month = cls.target_month(now.year, now.month, delta * 3)
 
         # 调用接口的日期所在的季度
-        quarter = math.ceil(month / 3)
+        quarter = int(math.ceil(month / 3))
 
         # 调用接口的日期所在的季度的首月
         end_month_of_quarter = quarter * 3
@@ -68,6 +75,7 @@ class CalendarUtils(object):
         start_month_of_quarter = end_month_of_quarter - 2
 
         _from = datetime(year, start_month_of_quarter, 1)
+
         if end_month_of_quarter == 12:
             year += 1
             end_month_of_quarter = 0
@@ -76,8 +84,9 @@ class CalendarUtils(object):
         return _from, _to
 
     @classmethod
-    def delta_year(cls, delta=0):
+    def delta_year(cls, delta=0) -> (datetime, datetime):
         """
+        根据偏移量获取目标年度的日期范围
         :param delta: 年偏移量(0今年, -1去年, 1明年 ...)
         :return:
         """

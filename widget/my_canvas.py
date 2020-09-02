@@ -68,6 +68,11 @@ class MainWidget(QWidget):
             self.el_img_canvas.mask_label_layer.hide()
 
 
+# class ScaledCanvas(QWidget):
+#     def __init__(self, *args, parent=None):
+#         super().__init__(parent, *args)
+
+
 class LabelLayerControlPanel(QWidget):
     """图层显示控制面板"""
 

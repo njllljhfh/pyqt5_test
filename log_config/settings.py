@@ -2,8 +2,11 @@
 import os
 import re
 import logging.config
+import sys
+from logging import Filter
 
 # 项目名(根据你的项目名称修改)
+
 PROJECT_NAME = 'pyqt5_test'
 # 日志文件所在文件夹的名称（如：logs）
 LOG_FOLDER_NAME = 'logs'
@@ -11,6 +14,49 @@ LOG_FOLDER_NAME = 'logs'
 """========================================="""
 """=         logging configuration         ="""
 """========================================="""
+
+p = os.path.dirname(os.path.abspath(__file__))
+# print(p)
+sys.path.append(p)
+
+
+class OperationType(object):
+    run = {"op_type": "run"}
+    walk = {"op_type": "walk"}
+    fly = {"op_type": "fly"}
+
+
+class MyFilter(Filter):
+
+    def filter(self, record):
+        """
+        Determine if the specified record is to be logged.
+
+        Is the specified record to be logged? Returns 0 for no, nonzero for
+        yes. If deemed appropriate, the record may be modified in-place.
+        """
+
+        print("- - - - - - log filter begin- - - - - -")
+        try:
+            my_key = record.op_type
+        except Exception:
+            my_key = None
+        if my_key:
+            print("MyFilter -- OperationType = {}".format(my_key))
+            import json
+            print("msg = {}, ".format(record.msg))
+            print("type(record.msg) = {}, ".format(record.msg))
+            msg_dict = json.loads(record.msg)
+            print("msg_dict = {}, ".format(msg_dict))
+            print("type(msg_dict) = {}, ".format(msg_dict))
+
+            xxx = json.loads(str({'a': 1}))
+            print("xxx = {}, ".format(xxx))
+
+        print("- - - - - - log filter end- - - - - -")
+
+        return True  # 会输入log到控制台
+        # return False # 只执行此filter中的逻辑，不会打印数据到控制台
 
 
 class Log(object):
@@ -34,7 +80,7 @@ class Log(object):
             cls.log_directory = os.path.join(project_dir, LOG_FOLDER_NAME)
 
         # 判断日志文件夹是否在项目文件中
-        print(f"log_path = {cls.log_directory}")
+        # print(f"log_path = {cls.log_directory}")
         if not os.path.exists(cls.log_directory):
             os.mkdir(cls.log_directory)
 
@@ -80,7 +126,11 @@ LOGGING_DIC = {
         }
     },
     # 过滤器，决定哪个log记录被输出
-    'filters': {},
+    'filters': {
+        'console_filter': {  # 自定义的过滤类
+            '()': 'settings.MyFilter',
+        }
+    },
     # 负责将Log message 分派到指定的destination
     'handlers': {
         # 打印到终端的日志
@@ -88,6 +138,7 @@ LOGGING_DIC = {
             'level': 'DEBUG',  # handler中的level等级大于等于logger的level时才生效。若小于，则按logger的level进行输出日志
             'class': 'logging.StreamHandler',  # 打印到屏幕
             'formatter': 'standard',
+            'filters': ['console_filter'],  # 设置过滤器
         },
         # 打印到common文件的日志,收集info及以上的日志
         'file_error': {
@@ -150,3 +201,6 @@ logging.config.dictConfig(LOGGING_DIC)  # 激活logging配置字典：LOGGING_DI
 """==========================="""
 """=         其他配置         ="""
 """==========================="""
+# if __name__ == '__main__':
+#     logger = logging.getLogger(__name__)
+#     logger.info("666", extra=OperationType.run)

@@ -73,7 +73,7 @@ if __name__ == '__main__':
         table_header_1 = ["序号", "模块", "子模块", "功能", "子功能", "功能描述"]
         excel_manager.generate_statistics_sheet(sheet_1, table_header_1)
 
-        sheet_name_2 = "sheet_2"
-        sheet_2 = excel_manager.create_sheet(sheet_name_2)
-        table_header_2 = ["序号2", "模块2", "子模块2", "功能2", "子功能2", "功能描述2"]
-        excel_manager.generate_statistics_sheet(sheet_2, table_header_2)
+        # sheet_name_2 = "sheet_2"
+        # sheet_2 = excel_manager.create_sheet(sheet_name_2)
+        # table_header_2 = ["序号2", "模块2", "子模块2", "功能2", "子功能2", "功能描述2"]
+        # excel_manager.generate_statistics_sheet(sheet_2, table_header_2)
