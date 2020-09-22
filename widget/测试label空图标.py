@@ -5,8 +5,9 @@ from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QPixmap, QIcon
 from PyQt5.QtWidgets import QLabel, QWidget, QApplication, QHBoxLayout
 
-
 import apprsc_rc
+
+
 class Xxx(QWidget):
 
     def __init__(self, *args):
@@ -24,7 +25,6 @@ class Xxx(QWidget):
 
 
 if __name__ == '__main__':
-
     # sys.path.append("..")
     from log_config import settings
 
