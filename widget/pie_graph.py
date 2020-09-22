@@ -336,8 +336,8 @@ class MyWidget(QWidget):
 
 
 if __name__ == '__main__':
-    sys.path.append("..")
-    from log_config import settings
+    # sys.path.append("..")
+    # from log_config import settings
 
     app = QApplication(sys.argv)
     win = MyWidget()
