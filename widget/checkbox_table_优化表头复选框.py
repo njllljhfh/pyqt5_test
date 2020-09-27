@@ -2,6 +2,8 @@
 # __author__= "NiuJinLong"
 # 优化：行复选框的enabled状态改变时，表头复选框的状态也根据情况而变化。
 # 优化：可设置表头复选框是3态还是2态。
+# 优化：表头复选框设置边长（这个自定义的qt在不同的windows上表现可能不一致，比如笔记本和台式机）。
+# 优化：添加批量删除行方法。
 import sys
 
 from PyQt5.QtCore import Qt, pyqtSignal, QRect, pyqtSlot, QSize, QEvent
@@ -15,7 +17,12 @@ class CheckBoxHeader(QHeaderView):
     # 复选框状态改变（参数1:改变后的表头复选框状态）
     check_state_change_signal = pyqtSignal(int)
 
-    def __init__(self, orientation=Qt.Horizontal, parent=None):
+    def __init__(self, orientation=Qt.Horizontal, parent=None, checkbox_side_length=16):
+        """
+        :param orientation: 设置为水平表头
+        :param parent: 父级对象
+        :param checkbox_side_length: 表头复选框边长
+        """
         super().__init__(orientation, parent)
         self.check_state = Qt.Unchecked
         self.setContentsMargins(0, 0, 0, 0)
@@ -23,15 +30,28 @@ class CheckBoxHeader(QHeaderView):
         # 这4个变量控制列头复选框的样式，位置以及大小
         self._x = 0
         self._y = 0
-        self._width = 14
-        self._height = 14
+        self._width = checkbox_side_length
+        self._height = checkbox_side_length
 
         # 复选框偏移量
-        self._x_offset = 0
-        self._y_offset = 2
+        if self._width % 2 == 0:
+            self._x_offset = 0
+            self._y_offset = 0
+            # self._x_offset = -1
+            # self._y_offset = 1
+        else:
+            self._x_offset = 0
+            self._y_offset = 0
+            # self._x_offset = 0.5
+            # self._y_offset = 0.5
 
         # 表头复选框是否是三态的
-        self.is_tri_state = True
+        self.is_tri_state = False
+
+    @property
+    def check_box_rect(self) -> QRect:
+        """获取表头复选框的大小"""
+        return QRect(self._x, self._y, self._width, self._height)
 
     def set_tri_state(self, tri_state: bool):
         """设置表头复选框是否为tri_state(三态)"""
@@ -43,11 +63,31 @@ class CheckBoxHeader(QHeaderView):
         painter.restore()
 
         if logicalIndex == 0:
-            self._x = (rect.width() - self._width) / 2. + self._x_offset
-            self._y = (rect.height() - self._height) / 2. + self._y_offset
+            # print(f"rect.x() = {rect.x()}")
+            # print(f"rect.y() = {rect.y()}")
+            # print(f"rect.width() = {rect.width()}")
+            # print(f"rect.height() = {rect.height()}")
+            # print(f"rect.center() = {rect.center()}")
+
+            check_box_rect = QRect(
+                (rect.width() - self._width + self._x_offset) / 2,
+                (rect.height() - self._height + self._y_offset) / 2,
+                self._width,
+                self._height
+            )
+            self._x = check_box_rect.x()
+            self._y = check_box_rect.y()
+
+            # print(f"self._x = {self._x}")
+            # print(f"self._y = {self._y}")
+            # print(f"self._width = {self._width}")
+            # print(f"self._height = {self._height}")
 
             option = QStyleOptionButton()
-            option.rect = QRect(rect.x() + self._x, rect.y() + self._y, self._width, self._height)
+            option.rect = check_box_rect
+            # print(f"check_box_rect.x() = {check_box_rect.x()}")
+            # print(f"check_box_rect.y() = {check_box_rect.y()}")
+
             option.state = QStyle.State_Enabled | QStyle.State_Active
             if self.check_state == Qt.Checked:
                 option.state |= QStyle.State_On
@@ -55,7 +95,10 @@ class CheckBoxHeader(QHeaderView):
                 option.state |= QStyle.State_NoChange
             else:
                 option.state |= QStyle.State_Off
-            self.style().drawControl(QStyle.CE_CheckBox, option, painter)
+
+            # self.style().drawControl(QStyle.CE_CheckBox, option, painter)
+            checkBox = QCheckBox()
+            self.style().drawPrimitive(QStyle.PE_IndicatorCheckBox, option, painter, checkBox)
 
     def mousePressEvent(self, event):
         index = self.logicalIndexAt(event.pos())
@@ -100,8 +143,8 @@ class RowCheckBox(QCheckBox):
 
     def changeEvent(self, event: QEvent):
         if event.type() == QEvent.EnabledChange:
-            # print("event.type() = {}".format(event.type()))
-            # print("self.isEnabled() = {}".format(self.isEnabled()))
+            # print(f"event.type() = {event.type()}")
+            # print(f"self.isEnabled() = {self.isEnabled()}")
             self.enabled_changed_signal.emit(self)
 
         self.update()
@@ -130,10 +173,11 @@ class BaseTableWidget(QTableWidget):
         # 可以点击的复选框对象的列表
         self.enabled_checkbox_ls = list()
 
-    def set_table_header_field(self, header_field: list, is_tri_state=True):
+    def set_table_header_field(self, header_field: list, checkbox_side_length: int = 16, is_tri_state: bool = False):
         """
         设置行表头字段
         :param header_field: 表头字段
+        :param checkbox_side_length: 表头复选框的边长
         :param is_tri_state: 是否是3态复选框
         :return:
         """
@@ -143,7 +187,7 @@ class BaseTableWidget(QTableWidget):
                 # 表头checkbox
                 header_field.insert(0, None)
                 self.setColumnCount(len(header_field))  # 设置列数
-                header = CheckBoxHeader()  # 实例化自定义表头
+                header = CheckBoxHeader(parent=self, checkbox_side_length=checkbox_side_length)  # 实例化自定义表头
                 header.set_tri_state(is_tri_state)  # 3态
                 header.check_state_change_signal.connect(self.h_header_check_state_change_handler)
                 self.setHorizontalHeader(header)  # 设置表头
@@ -241,7 +285,7 @@ class BaseTableWidget(QTableWidget):
             self.update_header_checkbox_state()
 
             # 测试调用的代码
-            print("第{}行的row_checkbox点击事件 - - - - - - -".format(row))
+            print(f"第{row}行的row_checkbox点击事件 - - - - - - -")
             self.get_selected_row_ls()
             # - - -
 
@@ -264,8 +308,7 @@ class BaseTableWidget(QTableWidget):
         self.update_header_checkbox_state()
 
         # 测试调用的代码
-        print("第{}行row_checkbox的enabled状态变为{} - - - - - - -".format(self.get_row_by_row_checkbox(checkbox),
-                                                                    checkbox.isEnabled()))
+        print(f"第{self.get_row_by_row_checkbox(checkbox)}行row_checkbox的enabled状态变为{checkbox.isEnabled()} - - - - -")
         self.get_selected_row_ls()
         # - - -
 
@@ -391,24 +434,33 @@ class BaseTableWidget(QTableWidget):
         self.removeRow(row)
 
         # 测试调用的代码
-        print("第{}行删除事件 - - - - - - -".format(row))
+        print(f"第{row}行删除事件 - - - - - - -")
         self.get_selected_row_ls()
         # - - -
 
-    def get_selected_row_ls(self):
-        """获取已选择行号的列表"""
-        print("已选的行数 = {}".format(len(self.selected_checkbox_ls)))
-        row_ls = [self.get_row_by_row_checkbox(combobox) for combobox in self.selected_checkbox_ls]
-        row_ls.sort()
-        print("已选行号列表 = {}     长度={}".format(row_ls, len(row_ls)))
+    def remove_row_in_batch(self):
+        """批量删除"""
+        for row_checkbox in self.selected_checkbox_ls[:]:
+            row = self.get_row_by_row_checkbox(row_checkbox)
+            self.remove_row(row)
+
+    def get_selected_row_ls(self) -> [int, ...]:
+        """
+        获取已选择行号的列表
+        :return:
+        """
+        print(f"已选的行数 = {len(self.selected_checkbox_ls)}")
+        selected_row_ls = [self.get_row_by_row_checkbox(combobox) for combobox in self.selected_checkbox_ls]
+        selected_row_ls.sort()
+        print(f"已选行号列表 = {selected_row_ls}     长度={len(selected_row_ls)}")
         enabled_row_ls = [self.get_row_by_row_checkbox(combobox) for combobox in self.enabled_checkbox_ls]
         enabled_row_ls.sort()
-        print("可用行号列表 = {}     长度={}".format(enabled_row_ls, len(enabled_row_ls)))
+        print(f"可用行号列表 = {enabled_row_ls}     长度={len(enabled_row_ls)}")
         all_row_ls = [self.get_row_by_row_checkbox(combobox) for combobox in self.all_checkbox_ls]
         all_row_ls.sort()
-        print("全部行号列表 = {}     长度={}".format(all_row_ls, len(all_row_ls)))
+        print(f"全部行号列表 = {all_row_ls}     长度={len(all_row_ls)}")
         print("- " * 30, "\n")
-        return row_ls
+        return selected_row_ls
 
     def clear_data(self):
         """清除数据"""
@@ -454,17 +506,20 @@ if __name__ == '__main__':
             # 交替行颜色
             self.setAlternatingRowColors(True)
 
-        def init_data(self):
+        def init_data(self, serial_num_offset=0):
 
             # self.serial_num_max = 0
 
-            self.serial_num_offset = 0
+            self.serial_num_offset = serial_num_offset
             # self.serial_num_offset = 1
 
-        def set_table_header_field(self, header_field: list, is_tri_state=True):
-            super().set_table_header_field(header_field, is_tri_state=is_tri_state)
+        def set_table_header_field(self, header_field: list, checkbox_side_length=16, is_tri_state=False):
+            super().set_table_header_field(header_field,
+                                           checkbox_side_length=checkbox_side_length,
+                                           is_tri_state=is_tri_state)
             # self.horizontalHeader().setMinimumHeight(20) # 设置表头高度
             self.setColumnWidth(0, 40)  # 设置第0列宽度
+            self.horizontalHeader().setFixedHeight(30)
             self.setColumnWidth(self.columnCount() - 1, 180)  # 设置操作列宽度
 
         def insert_one_row(self, row_data: dict, row: int, refresh_all=False):
@@ -481,7 +536,7 @@ if __name__ == '__main__':
             # else:
             #     self.serial_num_max += 1
             #     serial_number = self.serial_num_max
-            # print("self.serial_num_max = {}".format(self.serial_num_max))
+            # print(f"self.serial_num_max = {self.serial_num_max}")
             # - - -
 
             # 调用父类方法添加第一列的checkbox
@@ -570,15 +625,15 @@ if __name__ == '__main__':
                 # 删除时
                 start_row = row
 
-            # print("当前行号 = {}".format(row))
-            # print("当前行的序号 = {}".format(row + 1))
-            # print("需要更新的起始行 = {}".format(start_row))
-            # print("表中总行数 = {}".format(self.rowCount()))
+            # print(f"当前行号 = {row}")
+            # print(f"当前行的序号 = {row + 1}")
+            # print(f"需要更新的起始行 = {start_row}")
+            # print(f"表中总行数 = {self.rowCount()}")
 
             # 遍历更新后面的全部行的序号
             for updated_row in range(start_row, self.rowCount()):
                 new_serial_num = updated_row + self.serial_num_offset
-                # print("下一行更新后的序号 = {}".format(new_serial_num))
+                # print(f"下一行更新后的序号 = {new_serial_num}")
                 serial_item = self.item(updated_row, self._column_offset + 0)
                 serial_item.setText(str(new_serial_num))
             # print("——————————————————————————————")
@@ -592,13 +647,29 @@ if __name__ == '__main__':
                     row = self._current_clicked_row(operation_column_btn_widget)
                     name_item = self.item(row, self._column_offset + 1)
 
-                    # print("删除:{}".format(name_item.text()))
+                    # print(f"删除:{name_item.text()}")
                     self.remove_row(row)
                     self.update_all_back_rows_serial_number(row, plus_one=False)
                 except Exception as e:
                     print(f"Error:{e}")
 
             return wrapper
+
+        def delete_in_batch(self):
+            """批量删除"""
+            try:
+                selected_row_ls = self.get_selected_row_ls()
+                print(f"根据选择的行号，获取数据库id。删除数据库数据。")
+                for row in selected_row_ls:
+                    pass
+            except Exception as e:
+                print(f"Error:{e}")
+
+            try:
+                self.remove_row_in_batch()
+                self.update_all_back_rows_serial_number(0, plus_one=False)
+            except Exception as e:
+                print(f"Error:{e}")
 
         def set_enable_status_btn_clicked_event(self, operation_column_btn_widget: QWidget):
             """设置row_checkbox的可用状态"""
@@ -639,9 +710,17 @@ if __name__ == '__main__':
         def __init__(self, parent=None, *args):
             super().__init__(parent, *args)
             layout = QVBoxLayout(self)
-            self.btn = QPushButton(self)
-            self.btn.setText("确定")
-            layout.addWidget(self.btn)
+
+            layout_btn = QHBoxLayout()
+            self.confirm_btn = QPushButton(self)
+            self.confirm_btn.setText("确定")
+            layout_btn.addWidget(self.confirm_btn)
+
+            self.batch_rm_btn = QPushButton(self)
+            self.batch_rm_btn.setText("批量删除")
+            layout_btn.addWidget(self.batch_rm_btn)
+
+            layout.addLayout(layout_btn)
 
             self.check_box_table = MyCheckboxTable(has_header_checkbox=True)
             # self.check_box_table = MyCheckboxTable(has_header_checkbox=False)
@@ -650,10 +729,28 @@ if __name__ == '__main__':
             self.setWindowTitle('带表头复选框的表')
             self.resize(600, 400)
 
-            self.btn.clicked.connect(self.check_box_table.get_selected_row_ls)
+            # qss = """
+            # /**********表格样式**********/
+            # MyCheckboxTable {
+            #     background-color: rgb(67, 67, 67);
+            #     alternate-background-color: rgb(53, 53, 53);
+            #     selection-background-color: rgb(87, 87, 87);
+            #     selection-color: rgb(220, 220, 220);
+            #     color: rgb(220, 220, 220);
+            # }
+            #
+            # MyCheckboxTable QHeaderView::section {
+            #     background-color: rgb(53, 53, 53);
+            #     color: rgb(220, 220, 220);
+            # }
+            # """
+            # self.setStyleSheet(qss)
+
+            self.confirm_btn.clicked.connect(self.check_box_table.get_selected_row_ls)
+            self.batch_rm_btn.clicked.connect(self.check_box_table.delete_in_batch)
 
         def init_data(self):
-            self.check_box_table.init_data()
+            self.check_box_table.init_data(serial_num_offset=0)
 
 
     # - - -
@@ -663,8 +760,8 @@ if __name__ == '__main__':
 
     header_field = ['序号', '姓名', '年龄', '操作']
     # 设置表格行表头字段
-    # my_widget.check_box_table.set_table_header_field(header_field, is_tri_state=True)  # 3态
-    my_widget.check_box_table.set_table_header_field(header_field, is_tri_state=False)  # 2态
+    my_widget.check_box_table.set_table_header_field(header_field, checkbox_side_length=16, is_tri_state=True)  # 3态
+    # my_widget.check_box_table.set_table_header_field(header_field, checkbox_side_length=16, is_tri_state=False)  # 2态
 
     print("尾部插入4条数据=====================================================================\n")
     data = [
@@ -685,10 +782,10 @@ if __name__ == '__main__':
     # my_widget.check_box_table.insert_rows(data, refresh_all=False)  # 尾部添加数据加数据
 
     print("倒数第二行插入1条数据=====================================================================\n")
-    # print("总行数 = {}".format(my_widget.check_box_table.rowCount()))
+    # print(f"总行数 = {my_widget.check_box_table.rowCount()}")
     my_widget.check_box_table.insert_one_row({"name": "xxx", "age": "777"}, my_widget.check_box_table.rowCount() - 1)
-    my_widget.check_box_table.insert_one_row({"name": "xxx", "age": "888"}, my_widget.check_box_table.rowCount() - 1)
-    my_widget.check_box_table.insert_one_row({"name": "xxx", "age": "999"}, my_widget.check_box_table.rowCount() - 1)
+    my_widget.check_box_table.insert_one_row({"name": "yyy", "age": "888"}, my_widget.check_box_table.rowCount() - 1)
+    my_widget.check_box_table.insert_one_row({"name": "zzz", "age": "999"}, my_widget.check_box_table.rowCount() - 1)
 
     my_widget.show()
     sys.exit(app.exec_())
