@@ -659,6 +659,10 @@ if __name__ == '__main__':
             """批量删除"""
             try:
                 selected_row_ls = self.get_selected_row_ls()
+                if not selected_row_ls:
+                    print(f"没有选中任何数据")
+                    return
+
                 print(f"根据选择的行号，获取数据库id。删除数据库数据。")
                 for row in selected_row_ls:
                     pass
