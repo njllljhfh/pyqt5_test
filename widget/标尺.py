@@ -58,12 +58,15 @@ class ScalePlate(QWidget):
 
             for index, scale_pos in enumerate(self.show_pos_ls):
                 # 绘制标尺
-                rect = QRectF(*scale_pos)
+                x = scale_pos[0]
+                y = scale_pos[1]
+                w = scale_pos[2]
+                h = scale_pos[3]
+                rect = QRectF(x, y, w, h)
                 painter.drawRect(rect)
-
                 # 绘制标尺中文字
                 font_text = self.font_text_ls[index]
-                font_size = 0.8 * self.thickness
+                font_size = 0.7 * self.thickness
                 scale_font = QFont()
                 scale_font.setFamily("Microsoft YaHei")
                 scale_font.setPixelSize(font_size)
@@ -168,12 +171,14 @@ class ScalePlate(QWidget):
         print(f"big_factor = {big_factor}")
         print(f"small_factor = {small_factor}")
 
-        # 单位跨度
+        # 标尺控件的总长度
         if self.direction == Qt.Horizontal:
             span_total = self.width()
         else:
             span_total = self.height()
+        # 单位跨度
         span_unit = span_total / ((scale_num_shown - 1) * big_factor + small_factor)
+        # span_unit = round(span_unit,1)
         # 大比例的标尺跨度
         span_big_scale = span_unit * big_factor
         # 小比例的标尺跨度
@@ -245,8 +250,8 @@ class MyWidget(QWidget):
         super().__init__(*args)
         self.scale_thickness = 18
 
-        gg = [6, 66]
-        per_h = 4
+        gg = [9, 100]
+        per_h = 1
         per_v = 1
 
         # 假设原图像的宽高为800*600
