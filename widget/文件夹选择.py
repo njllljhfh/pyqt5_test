@@ -43,21 +43,21 @@ class Example(QMainWindow):
 
 
 if __name__ == "__main__":
-    # app = QApplication(sys.argv)
-    # ex = Example()
-    # sys.exit(app.exec_())
+    app = QApplication(sys.argv)
+    ex = Example()
+    sys.exit(app.exec_())
 
-    import re
-
-    # pattern = r'^[a-zA-Z/]:{0,1}[\//]{0,1}'  # 去掉根目录斜杠（linux）或盘符（windows）
-    pattern = r'^[a-zA-Z]:'
-
-    path = "E:/Matrixtime"
-    # path = "E:/"
-    res = re.sub(pattern, "", path)
-    print(res)
-
-    path = "/asd/Matrixtime"
-    # path = "/"
-    res = re.sub(pattern, "", path)
-    print(res)
+    # import re
+    #
+    # # pattern = r'^[a-zA-Z/]:{0,1}[\//]{0,1}'  # 去掉根目录斜杠（linux）或盘符（windows）
+    # pattern = r'^[a-zA-Z]:'
+    #
+    # path = "E:/Matrixtime"
+    # # path = "E:/"
+    # res = re.sub(pattern, "", path)
+    # print(res)
+    #
+    # path = "/asd/Matrixtime"
+    # # path = "/"
+    # res = re.sub(pattern, "", path)
+    # print(res)
