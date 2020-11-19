@@ -100,6 +100,17 @@ class CalendarUtils(object):
         return _from, _to
 
     @classmethod
+    def delta_all_date(cls) -> (datetime, datetime):
+        """
+        获取截止到今天为止的全部日期范围
+        :return:
+        """
+        _from = datetime(1, 1, 1)
+        _to = datetime.now()
+        _to = _to.replace(hour=23, minute=59, second=59, microsecond=99999)
+        return _from, _to
+
+    @classmethod
     def _target_month(cls, year: int, month: int, delta: int) -> (int, int):
         """
         根据月份偏移量，计算偏移后的'年'和'月'
@@ -132,6 +143,9 @@ if __name__ == '__main__':
     print("{:<8s}\t{}".format("当前日期:", datetime.now()))
     print("*" * 60)
 
+    print("{:<8s}\t{}".format("全部日期:", CalendarUtils.delta_all_date()))
+    print("*" * 60)
+
     print("{:<8s}\t{}".format("前天:", CalendarUtils.delta_day(-2)))
     print("{:<8s}\t{}".format("昨天:", CalendarUtils.delta_day(-1)))
     print("{:<8s}\t{}".format("今天:", CalendarUtils.delta_day()))
@@ -153,20 +167,19 @@ if __name__ == '__main__':
     print("{:<8s}\t{}".format("下下月:", CalendarUtils.delta_month(2)))
     print("*" * 60)
 
-    print("{:<8s}\t{}".format("上上季度:", CalendarUtils.delta_quarter(-3)))
-    print("{:<8s}\t{}".format("上上季度:", CalendarUtils.delta_quarter(-2)))
-    print("{:<8s}\t{}".format("上季度:", CalendarUtils.delta_quarter(-1)))
-    print("{:<8s}\t{}".format("本季度:", CalendarUtils.delta_quarter()))
-    print("{:<8s}\t{}".format("下季度:", CalendarUtils.delta_quarter(1)))
-    print("{:<8s}\t{}".format("下下季度:", CalendarUtils.delta_quarter(2)))
-    print("*" * 60)
-
     print("{:<8s}\t{}".format("0001年:", CalendarUtils.delta_year(-2019)))
     print("{:<8s}\t{}".format("前年:", CalendarUtils.delta_month(-2)))
     print("{:<8s}\t{}".format("去年:", CalendarUtils.delta_month(-1)))
     print("{:<8s}\t{}".format("本年:", CalendarUtils.delta_month()))
     print("{:<8s}\t{}".format("明年:", CalendarUtils.delta_month(1)))
     print("{:<8s}\t{}".format("后年:", CalendarUtils.delta_month(2)))
+    print("*" * 60)
+
+    print("{:<8s}\t{}".format("上上季度:", CalendarUtils.delta_quarter(-2)))
+    print("{:<8s}\t{}".format("上季度:", CalendarUtils.delta_quarter(-1)))
+    print("{:<8s}\t{}".format("本季度:", CalendarUtils.delta_quarter()))
+    print("{:<8s}\t{}".format("下季度:", CalendarUtils.delta_quarter(1)))
+    print("{:<8s}\t{}".format("下下季度:", CalendarUtils.delta_quarter(2)))
     print("*" * 60)
 
     # * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *

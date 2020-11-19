@@ -34,7 +34,7 @@ class ScalePlate(QWidget):
         # 标尺厚度
         self.thickness = 18
         # 图像缩放比例
-        self.img_ratio = 1.0
+        self.ratio = 1.0
 
         # 原始标尺刻度个数
         self.scale_num_origin = 3
@@ -80,10 +80,11 @@ class ScalePlate(QWidget):
         """设置每几个标尺显示为1个刻度"""
         self.per = per  # 每几个标尺显示为1个刻度
 
-    def set_img_ratio(self, ratio):
+    def set_ratio(self, ratio):
         """设置图像缩放比例"""
-        # TODO(tip):设置图像的缩放比，请在resize之前调用该方法
-        self.img_ratio = ratio
+        # TODO(tip): 1、如果是用户自定义的pos，需要用户在resize标尺控件大小之前，调用该方法设置缩放比(比如canvas中图像的缩放比)
+        # TODO(tip): 2、自适应的pos，不需要调用该方法（因为自适应时，不需使用缩放比)
+        self.ratio = ratio
 
     def set_pos_ls_origin(self, pos_ls=None):
         """设置自定义标尺刻度的原始数据"""
@@ -112,12 +113,12 @@ class ScalePlate(QWidget):
         """计算实际显示的标尺刻度pos(用户自定义的pos)"""
         if self.direction == Qt.Horizontal:
             logger.debug(f"============================= 水平标尺 =============================")
-            # logger.debug(f"水平：self.img_ratio = {self.img_ratio}")
+            # logger.debug(f"水平：self.ratio = {self.ratio}")
             self.pos_ls_shown = [
                 [
-                    pos[0] * self.img_ratio,
+                    pos[0] * self.ratio,
                     0,
-                    (pos[2]) * self.img_ratio,
+                    (pos[2]) * self.ratio,
                     # self.thickness - 1
                     self.height() - 1
                 ]
@@ -125,14 +126,14 @@ class ScalePlate(QWidget):
             ]
         else:
             logger.debug(f"============================= 竖直标尺 =============================")
-            # logger.debug(f"竖直：self.img_ratio = {self.img_ratio}")
+            # logger.debug(f"竖直：self.ratio = {self.ratio}")
             self.pos_ls_shown = [
                 [
                     0,
-                    pos[1] * self.img_ratio,
+                    pos[1] * self.ratio,
                     # self.thickness - 1,
                     self.width() - 1,
-                    (pos[3]) * self.img_ratio
+                    (pos[3]) * self.ratio
                 ]
                 for pos in self.pos_ls_origin
             ]
@@ -284,7 +285,7 @@ class ScalePlate(QWidget):
                             # 下横线
                             painter.drawLine(QPointF(0, self.height() - 1),
                                              QPointF(self.width(), self.height() - 1))
-                            # 左竖线
+                            # 右竖线
                             painter.drawLine(QPointF(self.width() - 1, 0),
                                              QPointF(self.width() - 1, self.height() - 1))
                         # 竖分割线
@@ -441,10 +442,10 @@ class MyWidget(QWidget):
     def set_img_ratio(self, ratio):
         """设置标尺的图像缩放比"""
         try:
-            self.scale_plate_h_top.set_img_ratio(ratio)
-            self.scale_plate_h_bottom.set_img_ratio(ratio)
-            self.scale_plate_v_left.set_img_ratio(ratio)
-            self.scale_plate_v_right.set_img_ratio(ratio)
+            self.scale_plate_h_top.set_ratio(ratio)
+            self.scale_plate_h_bottom.set_ratio(ratio)
+            self.scale_plate_v_left.set_ratio(ratio)
+            self.scale_plate_v_right.set_ratio(ratio)
         except Exception as e:
             logger.error(f"e: {e}", exc_info=True)
             raise
@@ -656,17 +657,18 @@ class Stack(QWidget):
 if __name__ == '__main__':
     app = QApplication(sys.argv)
 
-    # - - -
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     # my_widget = MyWidget()
     # my_widget.init_data()
-    # - - -
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     # my_widget = Canvas()
-    # - - -
-    # my_widget = Stack()
-    # - - -
-    my_widget = ScalePlate()
-    my_widget.set_line_color(QColor(255, 0, 0))
-    # - - -
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    my_widget = Stack()
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    # my_widget = ScalePlate()
+    # my_widget.set_line_color(QColor(255, 0, 0))
+    # my_widget.set_font_size(16)
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     # scale_thickness = 18
     # gg = [6, 66]
     # per_h = 1
@@ -678,6 +680,7 @@ if __name__ == '__main__':
     # my_widget.set_scale_num_origin(scale_num_origin=gg[1])
     # my_widget.set_per(per=per_h)
     # my_widget.resize(1200, 100)
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
     my_widget.show()
     sys.exit(app.exec_())

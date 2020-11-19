@@ -17,6 +17,7 @@ class Xxx(QWidget):
         self.label = QLabel("ok")
         self.label.setMinimumSize(300, 100)
         self.label.setAlignment(Qt.AlignHCenter)
+        # pix = QPixmap(":icons/ng_img.png")
         pix = QPixmap("../icons/ng_img.png")
         self.label.setPixmap(pix)
         layout.addWidget(self.label)

@@ -7,5 +7,6 @@
     <file>icons/ok_img.png</file>
     <file>icons/ng_img.png</file>
     <file>images/python.jpg</file>
+    <file>icons/loading.gif</file>
   </qresource>
 </RCC>

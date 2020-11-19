@@ -344,6 +344,7 @@ class BaseTableWidget(QTableWidget):
             self.enabled_checkbox_ls.clear()
 
 
+
 if __name__ == '__main__':
 
     # 自定义的table子类
