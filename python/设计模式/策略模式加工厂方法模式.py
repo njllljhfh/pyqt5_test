@@ -1,6 +1,7 @@
 # -*- coding:utf-8 -*-
-# __source__ = "《设计模式之禅》-- P-500 -- 工厂方法模式+策略模式"
+# __source__ = "《设计模式之禅》--- 工厂方法模式+策略模式 --- P-500"
 from enum import Enum, unique
+from typing import ClassVar
 
 
 # IC卡类
@@ -97,13 +98,13 @@ class DeductionContext(object):
 
 # 策略管理
 @unique
-class StrategyManager(Enum):
-    """策略管理"""
+class StrategyEnum(Enum):
+    """策略类枚举"""
     SteadyDeduction = SteadyDeduction
     FreeDeduction = FreeDeduction
 
     @classmethod
-    def name_to_strategy(cls, name: str):
+    def name_to_strategy(cls, name: str) -> ClassVar[IDeduction]:
         """
         映射：枚举名字 --> 策略类
         :param name: 策略枚举类的名字
@@ -126,12 +127,12 @@ class StrategyFactory(object):
     @classmethod
     def get_deduction(cls, strategy_name: str):
         """
-        获取策略
+        获取策略对象
         :param strategy_name: 策略枚举类的名字
-        :return:
+        :return: 策略类的一个实例
         """
         # 获取策略类
-        strategy = StrategyManager.name_to_strategy(strategy_name)
+        strategy = StrategyEnum.name_to_strategy(strategy_name)
         return strategy()
 
 

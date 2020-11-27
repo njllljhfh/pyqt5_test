@@ -49,37 +49,37 @@ class AbsHumanFactory(object):
 
 
 #
-class BlackHumanFactor(AbsHumanFactory):
+class BlackHumanFactory(AbsHumanFactory):
     def create_human(self, class_human: BlackHuman) -> BlackHuman:
         return class_human()
 
 
-class YellowHumanFactor(AbsHumanFactory):
+class YellowHumanFactory(AbsHumanFactory):
     def create_human(self, class_human: YellowHuman) -> YellowHuman:
         return class_human()
 
 
-class WhiteHumanFactor(AbsHumanFactory):
+class WhiteHumanFactory(AbsHumanFactory):
     def create_human(self, class_human: WhiteHuman) -> WhiteHuman:
         return class_human()
 
 
 if __name__ == '__main__':
-    yin_yang_lu = BlackHumanFactor()
+    yin_yang_lu = BlackHumanFactory()
     black_human = yin_yang_lu.create_human(BlackHuman)
     black_human.get_color()
     black_human.talk()
     print(f"{type(black_human)}")
     print("- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - ")
 
-    yin_yang_lu = YellowHumanFactor()
+    yin_yang_lu = YellowHumanFactory()
     yellow_human = yin_yang_lu.create_human(YellowHuman)
     yellow_human.get_color()
     yellow_human.talk()
     print(f"{type(yellow_human)}")
     print("- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - ")
 
-    yin_yang_lu = WhiteHumanFactor()
+    yin_yang_lu = WhiteHumanFactory()
     white_human = yin_yang_lu.create_human(WhiteHuman)
     white_human.get_color()
     white_human.talk()
