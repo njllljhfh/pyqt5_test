@@ -1,5 +1,6 @@
 # -*- coding:utf-8 -*-
-# __source__ = "《设计模式之禅》 ---  工厂方法模式 --- P-82"
+# __source__ = "《设计模式之禅》 --- 工厂方法模式的扩展-1缩小为简单工厂模式 --- P-88"
+# 去掉了抽象工厂类：AbstractHumanFactory
 
 from typing import ClassVar
 
@@ -44,23 +45,19 @@ class WhiteHuman(Human):
         print("白色人种会说话，一般说的都是单字节。")
 
 
-# 抽象工厂类（抽象人类创建工厂）
-class AbstractHumanFactory(object):
-    def create_human(self, human: ClassVar[Human]):
-        pass
-
-
 # 具体工厂类（人类创建工厂）
-class HumanFactory(AbstractHumanFactory):
-    def create_human(self, human: ClassVar[Human]) -> Human:
+class HumanFactory(object):
+
+    @classmethod
+    def create_human(cls, human: ClassVar[Human]) -> Human:
         return human()
 
 
 # 场景类（女娲）
 class NvWa(object):
 
-    @classmethod
-    def main(cls):
+    @staticmethod
+    def main():
         yin_yang_lu = HumanFactory()
         black_human = yin_yang_lu.create_human(BlackHuman)
         black_human.get_color()

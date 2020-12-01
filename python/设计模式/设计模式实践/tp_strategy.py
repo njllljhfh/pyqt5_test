@@ -1,6 +1,7 @@
 # -*- coding:utf-8 -*-
 # __author__ = "Dragon"
 
+"""实践：chapter18_工厂方法模式_策略模式"""
 from enum import Enum, unique
 from typing import ClassVar
 
