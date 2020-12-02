@@ -39,6 +39,7 @@ class NovelBook(IBook):
         return self.author
 
 
+# 有了打折的需求后，扩展出来的小说类
 # 打折销售的小说类
 class OffNovelBook(NovelBook):
 
