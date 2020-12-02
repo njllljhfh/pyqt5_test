@@ -3,6 +3,8 @@
 
 
 # 美女接口
+# TODO: 把美女接口拆成两个接口
+# TODO: 根据接口隔离原则拆分接口时，首先必须满足单一职责原则。
 class IGoodBodyGirl(object):
 
     def good_looking(self):
