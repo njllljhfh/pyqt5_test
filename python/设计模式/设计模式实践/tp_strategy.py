@@ -1,7 +1,7 @@
 # -*- coding:utf-8 -*-
 # __author__ = "Dragon"
 
-"""实践：chapter18_工厂方法模式_策略模式"""
+"""实践：chapter35_工厂方法模式_策略模式"""
 from enum import Enum, unique
 from typing import ClassVar
 
@@ -107,7 +107,7 @@ class Gg(BaseEnum):
         return value_map.get(value_name)
 
 
-# - - - - - - - - - - - 测试用枚举类 - - - - - - - - - - -
+# - - - - - - - - - - - - - - - - - - - - - - - - - - -
 class TpStrategy(object):
     """TP策略接口"""
     _STRATEGY_NAME = "TpStrategy"
