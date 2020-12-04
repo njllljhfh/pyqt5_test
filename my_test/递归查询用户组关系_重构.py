@@ -16,14 +16,26 @@ class UserGroupData(object):
     def __init__(self, user_group_obj_ls: List[Group], all_group_obj_ls: List[Group]):
         """
         :param user_group_obj_ls: 用户所属的组对象列表
+        :param all_group_obj_ls: 全部用户组对象列表
         """
         self.user_group_obj_ls = user_group_obj_ls
+
         self._group_data: Dict[int, dict] = {}
-        self._organize(all_group_obj_ls)
+        self._organize_group_data(all_group_obj_ls)
+
+        self._group_layer_data = {
+            "sub_group_layer_data": None,
+            "super_group_layer_data": None,
+        }
+        self._organize_group_layer_data()
 
     @property
     def group_data(self):
         return self._group_data
+
+    @property
+    def group_layer_data(self):
+        return self._group_layer_data
 
     def _recursion_retrieve(self, group_obj_ls: List[Group], sub_group_id_data: List[dict], is_sub_group: bool = True):
         """
@@ -53,7 +65,8 @@ class UserGroupData(object):
             # 组织上级组
             for group in group_obj_ls[:]:
                 if group.GROUP_ID in input_super_group_id_ls:
-                    map_[group.GROUP_ID][group.SUPER_GROUP_ID] = dict()
+                    if group.SUPER_GROUP_ID is not None:
+                        map_[group.GROUP_ID][group.SUPER_GROUP_ID] = dict()
                     group_obj_ls.remove(group)
 
         end_count = len(group_obj_ls)
@@ -67,7 +80,7 @@ class UserGroupData(object):
                     _sub_group_id_data.append({key: item[key]})
             self._recursion_retrieve(group_obj_ls, _sub_group_id_data, is_sub_group=is_sub_group)
 
-    def _organize(self, all_group_obj_ls: List[Group]):
+    def _organize_group_data(self, all_group_obj_ls: List[Group]):
         """
         组织用户全部的组数据
         :param all_group_obj_ls:
@@ -82,7 +95,7 @@ class UserGroupData(object):
             }
             # 组织一个用户组上下级组数据
             # 上级组
-            if super_group_id:
+            if super_group_id is not None:
                 super_group_id_dict = {super_group_id: dict()}  # key:用户的第一层父级组id
                 sub_group_data = [{key: super_group_id_dict[key]} for key in super_group_id_dict]
                 self._recursion_retrieve(all_group_obj_ls[:], sub_group_data, is_sub_group=False)
@@ -93,6 +106,54 @@ class UserGroupData(object):
             self._recursion_retrieve(all_group_obj_ls[:], sub_group_data, is_sub_group=True)
             self._group_data[group_id]["sub_group"].update(super_group_id_dict[group_id])
 
+    def _organize_group_layer_data(self):
+        """组织用户组层级信息"""
+        sub_group_layer_data = dict()
+        super_group_layer_data = dict()
+        for group_id in self._group_data:
+            # group_id: 用户所在组的id
+            print(f"(用户所在组id = {group_id}) * * * * * * * * * * * * * *")
+            print(f"组织子级组层级数据 - - - - -")
+            group_id_ls = list()
+            sub_group_data = self._group_data[group_id]["sub_group"]
+            pprint(sub_group_data, width=4)
+            self._recur_group(sub_group_data, group_id_ls)
+            sub_group_layer_data[group_id] = group_id_ls
+            self._group_layer_data["sub_group_layer_data"] = sub_group_layer_data
+
+            print(f"组织父级组层级数据 - - - - -")
+            group_id_ls = list()
+            super_group_data = self._group_data[group_id]["super_group"]
+            pprint(super_group_data, width=4)
+            self._recur_group(super_group_data, group_id_ls)
+            super_group_layer_data[group_id] = group_id_ls
+            self._group_layer_data["super_group_layer_data"] = super_group_layer_data
+
+    def _recur_group(self, group_data: dict, group_id_ls: list):
+        """
+        递归组织一个用户组下个各层子级组id，或各层父级组id
+        :param group_data: 一个用户组的子级组的数据，或父级组数据
+        :param group_id_ls: 空 list，用于保存各个层的组id
+        :return:
+        """
+        group_id_ls_current_layer = list(group_data.keys())
+        if group_id_ls_current_layer:
+            group_id_ls.append(group_id_ls_current_layer)
+        else:
+            # group_data 的keys是空的，则values也是空的
+            return
+
+        group_next_layer_origin_data: List[dict] = list(group_data.values())
+        group_next_layer_data = dict()
+        for groups_next_layer in group_next_layer_origin_data:
+            for key in groups_next_layer.keys():
+                group_next_layer_data[key] = groups_next_layer[key]
+
+        if group_next_layer_data:
+            self._recur_group(group_next_layer_data, group_id_ls)
+        else:
+            # group_data 的keys不是空的，但是values中的字典全是空的
+            return
 
 
 if __name__ == '__main__':
@@ -105,11 +166,12 @@ if __name__ == '__main__':
     group_6 = Group(6, 1)  # is a sub group of the group with group_id = 1
     group_7 = Group(7, 0)
     group_8 = Group(8, None)
-    group_9 = Group(9, 10)  # is a sub group of the group with group_id = 1
+    group_9 = Group(9, 4)  # is a sub group of the group with group_id = 1
     group_10 = Group(10, 4)  # is a sub group of the group with group_id = 1
     group_11 = Group(11, 9)  # is a sub group of the group with group_id = 1
     group_12 = Group(12, 11)  # is a sub group of the group with group_id = 1
     obj_ls = [
+        group_0,
         group_1,
         group_2,
         group_3,
@@ -128,8 +190,12 @@ if __name__ == '__main__':
     # 用户属于的组
     user_group_obj_ls_ = [group_1, group_2, group_8]
     user_group_data = UserGroupData(user_group_obj_ls_, obj_ls)
-    pprint(user_group_data.group_data)
+    print("* " * 50)
+    print(f"用户组结构:")
+    pprint(user_group_data.group_data, width=1)
+    print("* " * 50)
+    print(f"用户组-父级id，子级id分层结构:")
+    pprint(user_group_data.group_layer_data)
 
     t2 = time.time()
-    print("\n", "- " * 30)
     print("耗时：{}".format(t2 - t1))
