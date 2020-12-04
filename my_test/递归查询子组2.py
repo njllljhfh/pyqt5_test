@@ -69,8 +69,8 @@ if __name__ == '__main__':
         Group(12, 11),  # is a sub group of the group with group_id = 1
     ]
 
-    # super_group_id_dict = {1: dict()}  # 用户属于的组
-    super_group_id_dict = {10: dict()}  # 用户属于的组
+    super_group_id_dict = {1: dict()}  # 用户属于的组
+    # super_group_id_dict = {10: dict()}  # 用户属于的组
 
     sub_group_data = [{key: super_group_id_dict[key]} for key in super_group_id_dict]
 
