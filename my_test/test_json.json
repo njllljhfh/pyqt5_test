@@ -1,0 +1,27 @@
+{
+  1: {
+    'sub_group': {
+      2: {
+        3: {}
+      },
+      4: {}
+    },
+    'super_group': {
+      0: {}
+    }
+  },
+  2: {
+    'sub_group': {
+      3: {}
+    },
+    'super_group': {
+      1: {
+        0: {}
+      }
+    }
+  },
+  8: {
+    'sub_group': {},
+    'super_group': {}
+  }
+}
