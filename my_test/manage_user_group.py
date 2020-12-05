@@ -1,3 +1,5 @@
+# -*- coding:utf-8 -*-
+# __author__ = "Dragon"
 import copy
 import time
 from pprint import pprint
