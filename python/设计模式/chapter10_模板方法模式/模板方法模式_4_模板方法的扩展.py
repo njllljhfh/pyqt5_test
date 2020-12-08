@@ -21,6 +21,7 @@ class HummerModel(object):
         """引擎会轰隆隆的响，不响那是假的"""
         pass
 
+    # TODO(tip): 模板方法
     def run(self):
         """模型应该会跑吧，别管是人推的，还是电力驱动的，总之要会跑"""
         # 先发动汽车
@@ -36,7 +37,7 @@ class HummerModel(object):
     # TODO: Hook Method（钩子方法）
     # TODO: is_alarm 方法的返回值影响了模板方法 run 的执行结果。
     def is_alarm(self):
-        """钩子方法，默认喇叭是会的。"""
+        """钩子方法，默认喇叭是会叫的。"""
         return True
 
 
@@ -94,7 +95,7 @@ class Client(object):
     @staticmethod
     def main():
         print("- - - - - - - H1型号悍马 - - - - - - -")
-        num = input(f"H1型号的悍马是否需要叭声响？ 0-不需要    1-需要")
+        num = input(f"H1型号的悍马是否需要叭声响？ 0-不需要，1-需要")
         h1 = HummerH1Model()
         if num == "0":
             h1.set_alarm(False)

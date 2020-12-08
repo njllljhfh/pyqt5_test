@@ -1,5 +1,5 @@
 # -*- coding:utf-8 -*-
-# __source__ = "《设计模式之禅》 --- 单例模式 --- P-75"
+# __source__ = "《设计模式之禅》 --- 单例模式(Singleton Pattern) --- P-75"
 
 import threading
 import time
