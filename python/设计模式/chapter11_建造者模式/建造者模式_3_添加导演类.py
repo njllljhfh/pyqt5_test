@@ -2,6 +2,7 @@
 # __source__ = "《设计模式之禅》--- 建造者模式_3_添加导演类 --- P-123"
 
 from enum import unique, Enum
+from typing import List
 
 
 # run顺序枚举类
@@ -13,11 +14,12 @@ class RunOrder(Enum):
     engine_boom = 3  # 引擎
 
 
-# 车辆模型的抽象类
+# TODO(tip): 抽象模板类（模板方法模式）
+# 抽象车辆模型类
 class CarModel(object):
 
     def __init__(self):
-        self.sequence = list()
+        self.sequence: List[int] = list()
 
     def start(self):
         """首先，这个模型要能被发动起来，别管是手摇发动，还是电力发动，反正是要能发动起来，那这个实现要在实现类里了"""
@@ -55,7 +57,7 @@ class CarModel(object):
 """- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - """
 
 
-# 抽象建造者
+# TODO(tip): 抽象建造者
 # 抽象汽车组装者
 class CarBuilder(object):
 
@@ -71,6 +73,7 @@ class CarBuilder(object):
 """- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - """
 
 
+# TODO(tip): 具体产品
 # 奔驰模型
 class BenzModel(CarModel):
 
@@ -106,7 +109,7 @@ class BMWModel(CarModel):
 """- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - """
 
 
-# 具体建造者
+# TODO(tip): 具体建造者
 # 奔驰车组装者
 class BenzBuilder(CarBuilder):
 
@@ -136,7 +139,7 @@ class BMWBuilder(CarBuilder):
 """- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - """
 
 
-# 导演类
+# TODO(tip): 导演类
 class Director(object):
     """导演类：负责按照指定的顺序生产模型"""
 
@@ -148,7 +151,7 @@ class Director(object):
     def get_a_benz_model(self):
         """A类型的奔驰车，先start，然后stop，其他什么引擎了，喇叭了一概没有"""
         # 清理场景类
-        self.sequence.clear()
+        self.sequence.clear()  # TODO(tip): 这里是一些初级程序员不注意的地方
         # 这只ABenzModel的执行顺序
         self.sequence.append(RunOrder.start.value)
         self.sequence.append(RunOrder.stop.value)
@@ -193,17 +196,20 @@ class Client(object):
         # XX公司要A类型的奔驰车1辆，B类型的奔驰车2两，C类型的宝马车3辆，D类型的车不要。
         director = Director()
         for i in range(1):
-            director.get_a_benz_model().run()
+            a_benz = director.get_a_benz_model()
+            a_benz.run()
             print("* * * ")
         print("- - - - - - - - - - - - - - - - - - - - - - - - ")
 
         for i in range(2):
-            director.get_b_benz_model().run()
+            b_benz = director.get_b_benz_model()
+            b_benz.run()
             print("* * * ")
         print("- - - - - - - - - - - - - - - - - - - - - - - - ")
 
         for i in range(3):
-            director.get_c_bmw_model().run()
+            c_bmw = director.get_c_bmw_model()
+            c_bmw.run()
             print("* * * ")
         print("- - - - - - - - - - - - - - - - - - - - - - - - ")
 

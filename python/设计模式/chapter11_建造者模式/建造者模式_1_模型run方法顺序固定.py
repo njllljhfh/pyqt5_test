@@ -2,6 +2,7 @@
 # __source__ = "《设计模式之禅》--- 建造者模式_1_模型run方法顺序固定 --- P-117"
 
 from enum import unique, Enum
+from typing import List
 
 
 # run顺序枚举类
@@ -17,7 +18,7 @@ class RunOrder(Enum):
 class CarModel(object):
 
     def __init__(self):
-        self.sequence = list()
+        self.sequence: List[int] = list()
 
     def start(self):
         """首先，这个模型要能被发动起来，别管是手摇发动，还是电力发动，反正是要能发动起来，那这个实现要在实现类里了"""
