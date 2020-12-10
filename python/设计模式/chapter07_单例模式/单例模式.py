@@ -44,15 +44,15 @@ class Singleton(object):
     _instance_lock = threading.Lock()
 
     def __new__(cls, *args, **kwargs):
-        if not hasattr(Singleton, "_instance"):
+        if not hasattr(cls, "_instance"):
             # time.sleep(1)
             with cls._instance_lock:
-                if not hasattr(Singleton, "_instance"):
-                    Singleton._instance = object.__new__(cls)
+                if not hasattr(cls, "_instance"):
+                    cls._instance = object.__new__(cls)
                     # with LOCK:
                     #     global NUM
                     #     NUM += 1
-        return Singleton._instance
+        return cls._instance
 
     def do_something(self):
         print(f"{id(self)}, Do something.")
