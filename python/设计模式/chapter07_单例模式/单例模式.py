@@ -1,5 +1,5 @@
 # -*- coding:utf-8 -*-
-# __source__ = "《设计模式之禅》 --- 单例模式 --- P-75"
+# __source__ = "《设计模式之禅》 --- 单例模式(Singleton Pattern) --- P-75"
 
 import threading
 import time
@@ -44,15 +44,15 @@ class Singleton(object):
     _instance_lock = threading.Lock()
 
     def __new__(cls, *args, **kwargs):
-        if not hasattr(Singleton, "_instance"):
+        if not hasattr(cls, "_instance"):
             # time.sleep(1)
             with cls._instance_lock:
-                if not hasattr(Singleton, "_instance"):
-                    Singleton._instance = object.__new__(cls)
+                if not hasattr(cls, "_instance"):
+                    cls._instance = object.__new__(cls)
                     # with LOCK:
                     #     global NUM
                     #     NUM += 1
-        return Singleton._instance
+        return cls._instance
 
     def do_something(self):
         print(f"{id(self)}, Do something.")
