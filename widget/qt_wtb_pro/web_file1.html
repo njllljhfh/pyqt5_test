@@ -1,0 +1,31 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>web channel</title>
+
+  <script src="qwebchannel.js"></script>
+
+  <script language="JavaScript">
+    function Web2PyQt5Value() {
+      if ( window.con) {
+        window.con.value = "你好 Pyqt5";
+      }
+    }
+    function PyQt52WebValue(value){
+      alert(value);
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+      new QWebChannel( qt.webChannelTransport, function(channel) {
+        window.con = channel.objects.con;
+      });
+    });
+  </script>
+
+</head>
+<body>
+  <button onclick="Web2PyQt5Value()">点我</button>
+</body>
+</html>
