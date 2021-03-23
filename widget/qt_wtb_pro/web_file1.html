@@ -14,7 +14,8 @@
       }
     }
     function PyQt52WebValue(value){
-      alert(value);
+      // qt调用 PyQt52WebValue 方法时，js会执行 PyQt52WebValue 方法
+      alert(value.xxx);
     }
 
     document.addEventListener("DOMContentLoaded", function () {

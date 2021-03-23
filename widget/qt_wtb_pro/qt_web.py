@@ -38,7 +38,9 @@ class MainWindow(QMainWindow):
 
     def calljs(self):
         # jscode = "PyQt52WebValue('你好web');"
-        jscode = "PyQt52WebValue();"
+        d = {"xxx":"97"}
+        jscode = f'PyQt52WebValue({d});'
+        # jscode = "PyQt52WebValue();"
         self.browser.page().runJavaScript(jscode)
 
 

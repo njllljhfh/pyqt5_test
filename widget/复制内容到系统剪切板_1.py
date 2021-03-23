@@ -2,7 +2,8 @@
 import sys
 
 from PyQt5.QtCore import QTimer, Qt
-from PyQt5.QtWidgets import QWidget, QApplication, QHBoxLayout, QPushButton
+from PyQt5.QtGui import QKeySequence
+from PyQt5.QtWidgets import QWidget, QApplication, QHBoxLayout, QPushButton, QShortcut, QKeySequenceEdit
 
 
 class MyWidget(QWidget):
@@ -24,7 +25,6 @@ class MyWidget(QWidget):
         self.copy_product_code_btn.update_product_code("11930200010000123456801")
 
 
-
 class CopyProductCodeBtn(QPushButton):
     """复制产品编码"""
 
@@ -42,6 +42,10 @@ class CopyProductCodeBtn(QPushButton):
         self.timer.setInterval(interval_time * 1000)  # 时间间隔换算为:秒
         self.timer.setTimerType(Qt.PreciseTimer)
         self.timer.timeout.connect(self.time_out_event)
+
+        # - - -
+        # QShortcut(QKeySequence(self.tr('ctrl+1')), self, parent.close)
+        QShortcut(QKeySequence('ctrl+1'), self, parent.close)
 
     def clicked_event(self):
         try:

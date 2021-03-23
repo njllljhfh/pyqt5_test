@@ -2,15 +2,15 @@
 from multiprocessing import Process
 import time
 
-NUM = 0
+NUM = 3
 
 
-def work(x, num):
+def work(tag, num):
     for i in range(10):
-        print(f"work: {x}---{num}")
+        print(f"work: {tag}---{num}")
         time.sleep(0.5)
         num += 1
-    print(f"{x}执行结束了。")
+    print(f"{tag}执行结束了。")
 
 
 if __name__ == '__main__':

@@ -1,0 +1,108 @@
+{
+  237: {
+    'detect_id': 237,
+    'product_id': 238,
+    'product_code': 'L2001_238',
+    'inference_result': 0,
+    'received_img_step_el': [
+      'TP1'
+    ],
+    'received_img_step_vi': [
+      'TP1'
+    ],
+    'received_defect_step_el': [
+      'TP1'
+    ],
+    'received_defect_step_vi': [
+      'TP1'
+    ],
+    'defect_intelligent_el': {
+      'TP1': [
+        {
+          'box': [
+            2,
+            1,
+            253,
+            204
+          ],
+          'roi': [
+            775,
+            0,
+            129,
+            209
+          ],
+          'score': 0.41414475072908924,
+          'class_order_id': 1,
+          'position': [
+            1,
+            7
+          ],
+          'angle': None,
+          'length': 68.0,
+          'height': 68.0,
+          'width': 84.3,
+          'area': 5734.7,
+          'class_name': 'EL破片',
+          'defect_level': 0
+        },
+        {
+          'box': [
+            1,
+            0,
+            252,
+            204
+          ],
+          'roi': [
+            775,
+            0,
+            129,
+            209
+          ],
+          'score': 0.29168241458738375,
+          'class_order_id': 4,
+          'position': [
+            1,
+            7
+          ],
+          'angle': None,
+          'length': 68.0,
+          'height': 68.0,
+          'width': 84.0,
+          'area': 5712.0,
+          'class_name': '虚焊',
+          'defect_level': 0
+        },
+        {
+          'box': [
+            -125,
+            0,
+            251,
+            203
+          ],
+          'roi': [
+            904,
+            0,
+            129,
+            209
+          ],
+          'score': 0.24348480672238293,
+          'class_order_id': 5,
+          'position': [
+            1,
+            8
+          ],
+          'angle': None,
+          'length': 67.7,
+          'height': 67.7,
+          'width': 83.7,
+          'area': 5661.4,
+          'class_name': '断栅',
+          'defect_level': 0
+        }
+      ]
+    },
+    'defect_intelligent_vi': {
+      'TP1': []
+    }
+  }
+}
