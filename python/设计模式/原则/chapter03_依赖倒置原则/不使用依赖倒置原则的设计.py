@@ -1,5 +1,9 @@
 # -*- coding:utf-8 -*-
 # __source__ = "《设计模式之禅》 --- chapter03_依赖倒置原则-不使用依赖倒置原则 --- P-39"
+"""
+    High level modules should not depend upon low level modules. Both should depend upon abstractions.
+Abstractions should not depend upon details. Details should depend upon abstractions.
+"""
 
 
 class Benz(object):

@@ -1,5 +1,6 @@
 # -*- coding:utf-8 -*-
 
+import time
 import sys
 from threading import Timer
 from PyQt5.QtWidgets import QWidget, QApplication, QMessageBox, QMainWindow
@@ -34,11 +35,15 @@ class MainWindow(QMainWindow):
         # 加载外部的web界面
         url = QUrl(QFileInfo("./web_file1.html").absoluteFilePath())
         self.browser.load(url)
+        # with open("./www1.html", "r", encoding="utf-8") as f:
+        # with open("./web_file1.html", "r", encoding="utf-8") as f:
+        #     html_data = f.read()
+        # self.browser.setHtml(html_data)
         self.setCentralWidget(self.browser)
 
     def calljs(self):
-        # jscode = "PyQt52WebValue('你好web');"
-        jscode = "PyQt52WebValue();"
+        jscode = "PyQt52WebValue('你好web');"
+        # jscode = "PyQt52WebValue();"
         self.browser.page().runJavaScript(jscode)
 
 

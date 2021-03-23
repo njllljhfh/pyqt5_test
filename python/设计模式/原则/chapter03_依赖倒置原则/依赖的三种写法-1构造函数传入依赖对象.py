@@ -28,7 +28,7 @@ class BMW(ICar):
 
 
 # 司机实现类
-class Driver(object):
+class Driver(IDriver):
     def __init__(self, car: ICar):
         # TODO:构造函数传入依赖对象
         self.car = car
