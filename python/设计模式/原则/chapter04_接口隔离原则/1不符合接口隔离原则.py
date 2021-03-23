@@ -1,5 +1,9 @@
 # -*- coding:utf-8 -*-
 # __source__ = "《设计模式之禅》 --- 接口隔离原则-不符合接口隔离原则 --- P-46"
+"""
+Clients should not be forced to depend upon interfaces that they don't use.(客户端不应该依赖他们不需要的接口。)
+The dependency of one class to another one should depend on the smallest possible interface.(类间的依赖关系应该建立在最小的接口上。)
+"""
 
 
 # 美女接口
