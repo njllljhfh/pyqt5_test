@@ -2,20 +2,149 @@
 # TODO:替换文件
 import sys
 import logging
-from enum import unique
+from enum import unique, Enum
 from pprint import pprint
 
+from PyQt5 import QtCore, QtWidgets
 from PyQt5.QtCore import Qt
 # from PyQt5.QtGui import QStandardItemModel
 from PyQt5.QtWidgets import QDialog, QApplication, QTreeWidgetItem, QMessageBox
 
-# from api.mvpapi import MvpApi
-from ui.annotation_authorization_ui import Ui_AnnotationAuthorization
 
-from widgets.test_data_njl import ANNOTATION_AUTHORIZATION_DATA_LS
-from widgets import ResponseCode, BaseEnum
+class BaseEnum(Enum):
+
+    @classmethod
+    def value_exists(cls, value):
+        """
+        Determine whether the value is in class.
+        :param value: The value of enumerate class.  <type: int>
+        :return: True or False.  <type: bool>
+        """
+        if value in [member.value for member in cls.__members__.values()]:
+            return True
+        else:
+            return False
+
+    @classmethod
+    def value_list(cls):
+        """
+        Get value list.
+        :return: Value list.  <type: list>
+        """
+
+        return [member.value for member in cls.__members__.values()]
+
+
+class ResponseCode(BaseEnum):
+    success = 0
+
+    @classmethod
+    def value_name(cls, value):
+        """ Map value to Chinese. """
+        value_map = {
+            cls.success.value: "成功",
+        }
+        return value_map.get(value)
+
+
+ANNOTATION_AUTHORIZATION_DATA_LS = [
+    {
+        "group_id": "201900000000000001",
+        "group_name": "标注1组",
+        "users": [
+            {
+                "user_id": "202000000000001111",
+                "user_name": "njl1",
+                "is_authorized": True,
+            },
+            {
+                "user_id": "202000000000001112",
+                "user_name": "njl2",
+                "is_authorized": False,
+            }
+        ]
+    },
+    {
+        "group_id": "201900000000000002",
+        "group_name": "标注2组",
+        "users": [
+            {
+                "user_id": "202000000000001113",
+                "user_name": "njl3",
+                "is_authorized": False,
+            },
+            {
+                "user_id": "202000000000001114",
+                "user_name": "njl4",
+                "is_authorized": False,
+            }
+        ]
+    },
+    {
+        "group_id": "201900000000000003",
+        "group_name": "标注3组",
+        "users":None,
+    #     "users": [
+    #         {
+    #             "user_id": "202000000000001115",
+    #             "user_name": "njl5",
+    #             "is_authorized": True,
+    #         },
+    #         {
+    #             "user_id": "202000000000001116",
+    #             "user_name": "njl6",
+    #             "is_authorized": True,
+    #         },
+    #         {
+    #             "user_id": "202000000000001117",
+    #             "user_name": "njl7",
+    #             "is_authorized": True,
+    #         }
+    #     ]
+    },
+]
 
 logger = logging.getLogger(__name__)
+
+
+class Ui_AnnotationAuthorization(object):
+    def setupUi(self, AnnotationAuthorization):
+        AnnotationAuthorization.setObjectName("AnnotationAuthorization")
+        AnnotationAuthorization.resize(385, 450)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(AnnotationAuthorization.sizePolicy().hasHeightForWidth())
+        AnnotationAuthorization.setSizePolicy(sizePolicy)
+        AnnotationAuthorization.setMinimumSize(QtCore.QSize(385, 450))
+        AnnotationAuthorization.setMaximumSize(QtCore.QSize(385, 450))
+        self.gridLayout = QtWidgets.QGridLayout(AnnotationAuthorization)
+        self.gridLayout.setObjectName("gridLayout")
+        self.horizontalLayout = QtWidgets.QHBoxLayout()
+        self.horizontalLayout.setSpacing(8)
+        self.horizontalLayout.setObjectName("horizontalLayout")
+        self.cancelBtn = QtWidgets.QPushButton(AnnotationAuthorization)
+        self.cancelBtn.setObjectName("cancelBtn")
+        self.horizontalLayout.addWidget(self.cancelBtn)
+        self.confirmBtn = QtWidgets.QPushButton(AnnotationAuthorization)
+        self.confirmBtn.setObjectName("confirmBtn")
+        self.horizontalLayout.addWidget(self.confirmBtn)
+        self.gridLayout.addLayout(self.horizontalLayout, 1, 1, 1, 1)
+        spacerItem = QtWidgets.QSpacerItem(198, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        self.gridLayout.addItem(spacerItem, 1, 0, 1, 1)
+        self.annotationAuthorizationTree = QtWidgets.QTreeWidget(AnnotationAuthorization)
+        self.annotationAuthorizationTree.setObjectName("annotationAuthorizationTree")
+        self.annotationAuthorizationTree.headerItem().setText(0, "1")
+        self.gridLayout.addWidget(self.annotationAuthorizationTree, 0, 0, 1, 2)
+
+        self.retranslateUi(AnnotationAuthorization)
+        QtCore.QMetaObject.connectSlotsByName(AnnotationAuthorization)
+
+    def retranslateUi(self, AnnotationAuthorization):
+        _translate = QtCore.QCoreApplication.translate
+        AnnotationAuthorization.setWindowTitle(_translate("AnnotationAuthorization", "授权"))
+        self.cancelBtn.setText(_translate("AnnotationAuthorization", "取消"))
+        self.confirmBtn.setText(_translate("AnnotationAuthorization", "确定"))
 
 
 class AnnotationAuthorizationDialog(QDialog):
@@ -176,7 +305,7 @@ class AnnotationAuthorizationDialog(QDialog):
                 userItemLs = list()
                 for user in groupData["users"]:
                     # 设置子节点1
-                    userItem = QTreeWidgetItem()
+                    userItem = QTreeWidgetItem(None)
                     userItem.user_id = user["user_id"]
                     userItem.user_group_id = groupData["group_id"]
                     userItem.setText(column, user["user_name"])
