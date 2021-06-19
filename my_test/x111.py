@@ -40,11 +40,3 @@ if hasattr(clangs, "say"):
     print(hasattr(clangs.say, "__call__"))
 
 print("- " * 30)
-
-
-def x(a, index=1):
-    print(f'a={a}, index={index}')
-
-
-x([1, 2, 3], 5)
-x([1, 2, 3], index=5)

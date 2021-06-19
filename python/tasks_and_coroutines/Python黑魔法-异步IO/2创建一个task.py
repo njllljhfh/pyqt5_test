@@ -1,0 +1,35 @@
+# -*- coding:utf-8 -*-
+import asyncio
+import time
+
+now = lambda: time.time()
+
+"""
+协程对象不能直接运行，在注册事件循环的时候，
+其实是 run_until_complete 方法将协程包装成为了一个任务（task）对象。
+所谓 task 对象是 Future 类的子类。保存了协程运行后的状态，用于未来获取协程的结果。
+"""
+
+
+async def do_some_work(x):
+    print('Waiting: ', x)
+
+
+start = now()
+
+coroutine = do_some_work(2)
+loop = asyncio.get_event_loop()
+
+# task = asyncio.ensure_future(coroutine)
+task = loop.create_task(coroutine)
+print(task)
+loop.run_until_complete(task)
+print(task)
+
+print('TIME: ', now() - start)
+
+"""
+创建task后，task在加入事件循环之前是pending状态，
+因为do_some_work中没有耗时的阻塞操作，task很快就执行完毕了。
+后面打印的finished状态。
+"""

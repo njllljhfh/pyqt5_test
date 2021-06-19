@@ -2,6 +2,7 @@
 
 import multiprocessing
 import os
+import time
 
 """
 在consumer中，conn2.close()了，在单独进程cons_p中执行，但producer中conn2还能发送数据.
@@ -24,11 +25,13 @@ def consumer(pipe):
             break
         print(item)
     print('consumer done')
+    # conn1.close()
 
 
 def producer(listArr, conn2):
     for item in listArr:
         conn2.send(item)
+        time.sleep(0.3)
 
 
 if __name__ == '__main__':
