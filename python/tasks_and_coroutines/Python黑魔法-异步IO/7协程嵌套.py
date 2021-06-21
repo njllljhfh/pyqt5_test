@@ -31,17 +31,10 @@ async def main():
     ]
 
     # - - -
-    # dones, pendings = await asyncio.wait(tasks)
-    #
-    # for task in dones:
-    #     print('Task ret: ', task.result())
-    # - - -
+    dones, pendings = await asyncio.wait(tasks)
 
-    # - - -
-    # 如果使用的是 asyncio.gather 创建协程对象，那么await的返回值就是协程运行的结果。
-    results = await asyncio.gather(*tasks)
-    for result in results:
-        print('Task ret: ', result)
+    for task in dones:
+        print('Task ret: ', task.result())
     # - - -
 
 

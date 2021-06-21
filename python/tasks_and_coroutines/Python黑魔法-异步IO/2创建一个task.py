@@ -29,7 +29,12 @@ print(task)
 print('TIME: ', now() - start)
 
 """
-创建task后，task在加入事件循环之前是pending状态，
-因为do_some_work中没有耗时的阻塞操作，task很快就执行完毕了。
-后面打印的finished状态。
+创建 task 后，task 在加入事件循环之前是 pending 状态，
+因为 do_some_work 中没有耗时的阻塞操作，task 很快就执行完毕了。
+后面打印的 finished 状态。
+
+asyncio.ensure_future(coroutine) 和 loop.create_task(coroutine) 都可以创建一个task，
+run_until_complete 的参数是一个 future 对象。
+当传入一个协程，其内部会自动封装成task，task是Future的子类。
+isinstance(task, asyncio.Future) 将会输出 True。
 """
