@@ -31,8 +31,8 @@ print('Task ret: ', task.result())
 print('TIME: ', now() - start)
 
 """
-在 sleep的时候，使用await让出控制权。
+在 sleep 的时候，使用 await 让出控制权。
 即当遇到阻塞调用的函数的时候，
-使用await方法将协程的控制权让出，以便loop调用其他的协程。
-现在我们的例子就用耗时的阻塞操作了。
+使用 await 方法将协程的控制权让出，以便 loop 调用其他的协程。
+现在我们的例子就用耗时的 sleep 阻塞操作了，因为 loop 中没有其他可执行的协程。
 """
