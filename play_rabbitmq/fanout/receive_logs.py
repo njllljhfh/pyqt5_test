@@ -22,8 +22,8 @@ def callback(ch, method, properties, body):
 
 is_disconnected = True
 
+print("消费者: 首次连接...")
 while is_disconnected:
-    print("消费者: 重新连接...")
     for url in all_endpoints:
         try:
             connection = pika.BlockingConnection(url)
@@ -55,3 +55,5 @@ while is_disconnected:
             is_disconnected = True
             print(f'消费过程中报错：{e}')
             break
+
+    print("消费者: 重新连接...")

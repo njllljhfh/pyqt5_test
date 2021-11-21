@@ -19,8 +19,8 @@ random.shuffle(all_endpoints)
 
 is_disconnected = True
 
+print("生产者: 首次连接...")
 while is_disconnected:
-    print("生产者: 重新连接...")
     for url in all_endpoints:
         try:
             connection = pika.BlockingConnection(url)
@@ -40,9 +40,11 @@ while is_disconnected:
                 message = f'info: Hello World!-{datetime.now()}'
                 channel.basic_publish(exchange='logs', routing_key='', body=message)
                 print(f" [x] Sent {message}")
-                time.sleep(1)
+                time.sleep(1.5)
         except Exception as e:
             connection.close()
             is_disconnected = True
             print(f'生产过程中报错：{e}')
             break
+
+    print("生产者: 重新连接...")
