@@ -49,6 +49,3 @@ print('TIME: ', now() - start)
 由此可见，协程的调用和组合十分灵活，尤其是对于结果的处理，
 如何返回，如何挂起，需要逐渐积累经验和前瞻的设计。
 """
-
-import base64
-base64.encodestring()
