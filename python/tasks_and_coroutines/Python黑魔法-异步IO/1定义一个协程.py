@@ -21,6 +21,6 @@ start = now()
 coroutine = do_some_work(2)
 
 loop = asyncio.get_event_loop()
-loop.run_until_complete(coroutine)
+loop.run_until_complete(coroutine)  # run_until_complete 方法是 阻塞 的
 
 print('TIME: ', now() - start)

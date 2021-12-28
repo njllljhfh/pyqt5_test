@@ -33,7 +33,7 @@ coroutine3 = do_some_work(4)
 tasks = [
     asyncio.ensure_future(coroutine1),
     asyncio.ensure_future(coroutine2),
-    asyncio.ensure_future(coroutine3)
+    asyncio.ensure_future(coroutine3),
 ]
 
 loop = asyncio.get_event_loop()
@@ -48,5 +48,5 @@ print('TIME: ', now() - start)
 """
 总时间为4s左右。4s的阻塞时间，足够前面两个协程执行完毕。如果是同步顺序的任务，那么至少需要7s。
 此时我们使用了 asyncio 实现了并发。
-asyncio.wait(tasks) 也可以使用 asyncio.gather(*tasks) ,前者接受一个task列表，后者接收一堆 task(位置参数)。
+asyncio.wait(tasks) 也可以使用 asyncio.gather(*tasks) ,前者接受一个task列表，后者接收多个 task(位置参数)。
 """

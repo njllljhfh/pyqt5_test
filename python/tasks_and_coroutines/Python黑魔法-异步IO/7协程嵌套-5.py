@@ -43,6 +43,7 @@ start = now()
 
 loop = asyncio.get_event_loop()
 done = loop.run_until_complete(main())
+print(f'done = {done}')
 print('TIME: ', now() - start)
 
 """

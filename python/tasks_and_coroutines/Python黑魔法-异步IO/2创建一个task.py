@@ -21,10 +21,10 @@ coroutine = do_some_work(2)
 loop = asyncio.get_event_loop()
 
 # task = asyncio.ensure_future(coroutine)
-task = loop.create_task(coroutine)
+task = loop.create_task(coroutine)  # 创建 task 后，task 在加入事件循环之前是 pending 状态
 print(task)
 loop.run_until_complete(task)
-print(task)
+print(task)  # 因为 do_some_work 中没有耗时的阻塞操作，task 很快就执行完毕了。此处打印的 finished 状态。
 
 print('TIME: ', now() - start)
 

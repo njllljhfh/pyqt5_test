@@ -17,9 +17,11 @@ async def do_some_work(x):
 
 
 def callback(future):
-    print('Callback: ', future.result())
+    # 我们创建的 task 和回调里的 future 对象，实际上是同一个对象
+    print('Callback: ', future.result())  # 在本示例中，future.result() 得到的是 do_some_work() 函数的返回值
 
 
+# 用 偏函数 调用，自定义的参数t 放在 默认参数future前面
 def callback2(t, future):
     print('Callback2:', t, future.result())
 
@@ -29,8 +31,8 @@ start = now()
 coroutine = do_some_work(11)
 loop = asyncio.get_event_loop()
 task = asyncio.ensure_future(coroutine)
-task.add_done_callback(callback)
-task.add_done_callback(functools.partial(callback2, 3))
+task.add_done_callback(callback)  # 先注册的回调函数，先执行
+task.add_done_callback(functools.partial(callback2, 3))  # 后注册的回调函数，后执行
 loop.run_until_complete(task)
 
 print('TIME: ', now() - start)

@@ -33,6 +33,8 @@ async def main():
     # - - -
     dones, pendings = await asyncio.wait(tasks)
 
+    print(f"pendings = {pendings}")
+
     for task in dones:
         print('Task ret: ', task.result())
     # - - -

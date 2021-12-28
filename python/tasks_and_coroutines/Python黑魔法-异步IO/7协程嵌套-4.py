@@ -20,9 +20,9 @@ async def do_some_work(x):
 
 
 """
-不在main协程函数里处理结果，直接返回await的内容，
-那么最外层的run_until_complete将会返回main协程的结果。
-或者返回使用asyncio.wait方式挂起协程。
+不在 main 协程函数里处理结果，直接返回 await 的内容，
+那么最外层的 run_until_complete 将会返回 main 协程的结果。
+或者返回使用 asyncio.wait 方式挂起协程。
 """
 
 
@@ -43,7 +43,9 @@ async def main():
 start = now()
 
 loop = asyncio.get_event_loop()
-done, pending = loop.run_until_complete(main())
+dones, pendings = loop.run_until_complete(main())
 
-for task in done:
+print(f'pendings = {pendings}')
+
+for task in dones:
     print('Task ret: ', task.result())
