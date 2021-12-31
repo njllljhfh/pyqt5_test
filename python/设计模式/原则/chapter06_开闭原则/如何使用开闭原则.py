@@ -1,9 +1,11 @@
 # -*- coding:utf-8 -*-
 # __source__ = "《设计模式之禅》--- 开闭原则-如何使用开闭原则 --- P-69"
 
-# TODO: 第一，通过接口或抽象类约束扩展，对扩展进行边界限定，不允许出现在接口或抽象类中不存在的publish方法；
-#       第二，参数类型、引用对象尽量使用接口或抽象类型，而不是实现类；
-#       第三，抽象层保持稳定，一旦确定即不允许修改。
+"""
+第一，通过接口或抽象类约束扩展，对扩展进行边界限定，不允许出现在接口或抽象类中不存在的publish方法；
+第二，参数类型、引用对象尽量使用接口或抽象类型，而不是实现类；
+第三，抽象层保持稳定，一旦确定即不允许修改。
+"""
 
 
 # 书籍接口
@@ -63,8 +65,8 @@ class OffNovelBook(NovelBook):
 
 
 # 计算机书籍类
-# TODO: 首先，ComputerBook 类必须实现 IBook 的三个方法，是通过 IComputerBook 接口传递进来的约束，也就是我们制定的 IBook 接口
-#       对扩展类 ComputerBook 产生了约束力，正是由于该约束力，BookStore 类才不需要进行大量的修改。（P-71）
+# 首先，ComputerBook 类必须实现 IBook 的三个方法，是通过 IComputerBook 接口传递进来的约束，也就是我们制定的 IBook 接口
+# 对扩展类 ComputerBook 产生了约束力，正是由于该约束力，BookStore 类才不需要进行大量的修改。（P-71）
 class ComputerBook(IComputerBook):
 
     def __init__(self, name, price, author, scope):

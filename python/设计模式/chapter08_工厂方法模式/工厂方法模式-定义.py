@@ -1,5 +1,11 @@
 # -*- coding:utf-8 -*-
 # __source__ = "《设计模式之禅》 --- 工厂方法模式(Factory Method) --- P-86"
+"""
+工厂方法模式-定义：
+    Define an interface for creating an object, but let subclasses decide which class to instantiate.
+    Factory Method lets a class defer instantiation to subclass.
+    定义一个用于创建对象的接口，让子类决定实例化哪一个类。工厂方法使一个雷的实例化延迟到其子类。
+"""
 
 from typing import ClassVar
 

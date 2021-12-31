@@ -1,6 +1,12 @@
 # -*- coding:utf-8 -*-
 # __source__ = "《设计模式之禅》 --- 抽象工厂模式(Abstract Factory Pattern)-定义 --- P-100"
 """
+抽象工厂模式-定义：
+    Provide an interface for creating families of related or dependent objects
+    without specifying their concrete classes.
+    为创建一组相关或相互依赖的对象提供一个接口，而无需指定他们的具体类。
+"""
+"""
 纵向扩展难：如增加一个产品C（产品族扩展）。不符合开闭原则。
 横向扩展容易：如增加产品等级，只需要增加一个工厂类负责新增加出来的产品等级的产品的生产。符合开闭原则。
 """
