@@ -1,5 +1,8 @@
 # -*- coding:utf-8 -*-
+from io import BytesIO
+
 import pandas as pd
+import matplotlib.pyplot as plt
 
 DOCUMENT_URL = 'https://pandas.pydata.org/docs/getting_started/intro_tutorials/04_plotting.html'
 
@@ -15,5 +18,22 @@ print(f"""
 """)
 print('我要快速查看一下可视化数据。')
 air_quality.plot()
+plt.show()
+print('- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - \n')
 
+print('将图像写入文件')
+ax = air_quality.plot()
+print(f'type(ax) = {type(ax)}')
+fig = ax.get_figure()
+print(f'type(fig) = {type(fig)}')
+fig.savefig('fig.png')
+print('- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - \n')
+
+print('将图像二进制写入变量')
+buffer = BytesIO()
+plt.savefig(buffer)
+plot_data = buffer.getvalue()
+print(f'type(plot_data) = {type(plot_data)}')
+with open('x.png', 'wb') as f:
+    f.write(plot_data)
 print('- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - \n')
