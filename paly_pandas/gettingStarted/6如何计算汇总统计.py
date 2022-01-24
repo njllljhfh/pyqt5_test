@@ -14,7 +14,7 @@ print(f"""
 # 默认情况下，操作通常会排除丢失的数据，并跨行操作。
 print('泰坦尼克号旅客的平均年龄')
 print(titanic["Age"].mean())
-print('泰坦尼克号旅客的平均年龄')
+print('泰坦尼克号旅客的年龄中位数(二分之一分位数)')
 print(titanic["Age"].median())
 print('- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - \n')
 
@@ -26,7 +26,7 @@ print('describe()函数：')
 print(titanic[["Age", "Fare"]].describe())
 print('- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - \n')
 
-print('可以使用DataFrame.agg()方法为给定的列定义聚合统计信息的特定组合')
+print('可以使用DataFrame.agg()方法为给定的列定义聚合统计信息的 自定义组合')
 print(titanic.agg(
     {
         "Age": ["min", "max", "median", "skew"],
@@ -69,8 +69,8 @@ print('* * * * * ')
 print(f's.min()={s.min()}, s.max()={s.max()}')
 print('- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - \n')
 
-print('每个性别和舱位组合的平均票价是多少')
-print(titanic.groupby(["Sex", "Pclass"])["Fare"].mean())
+print('每个 性别和舱位组合 的平均票价是多少')
+print(titanic.groupby(["Sex", "Pclass"])["Fare"].mean())  # <class 'pandas.core.series.Series'>
 print('- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - \n')
 
 print(f"""

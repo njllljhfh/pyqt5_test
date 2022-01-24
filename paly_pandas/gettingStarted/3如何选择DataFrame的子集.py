@@ -31,7 +31,7 @@ print('我对泰坦尼克号乘客的年龄很感兴趣:')
 # DataFrame 中的每一列都是 Series。当选择单个列时，返回的对象是 panda Series。
 ages = titanic["Age"]
 print(ages.head())
-# 返回 Series 和 DataFrame 包含行和列的数量:(行数, 列数)
+# shape属性 返回 Series 和 DataFrame 包含行和列的数量:(行数, 列数)
 # Series 是一维的，只返回行数。 本例中返回值为：(891,)
 print(f'看看输出的shape: {ages.shape}。 shape的类型是: {type(ages.shape)}')
 print('- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - \n')
@@ -87,6 +87,7 @@ print('我对35岁以上乘客的名字很感兴趣。')
 adult_names = titanic.loc[titanic["Age"] > 35, "Name"]
 print(type(adult_names))
 print(adult_names.head())
+print(f'看看输出的shape: {adult_names.shape}')
 print('- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - \n')
 
 print('我感兴趣的是 第10行到第25行 和 第3列到第5列。')
