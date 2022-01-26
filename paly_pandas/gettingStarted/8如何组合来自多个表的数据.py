@@ -32,10 +32,43 @@ print(f'根据datetime信息对表进行排序也说明了这两个表的合并�
       f'参数列定义表的来源(no2来自表air_quality_no2，pm25来自表air_quality_pm25):')
 air_quality = air_quality.sort_values("date.utc")
 print(air_quality.head())
-
 print('- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - \n')
+
 print(f'在这个特定的示例中，数据提供的参数列确保可以识别每个原始表。但情况并非总是如此。'
       f'concat函数用keys参数提供了一个方便的解决方案，它添加了一个附加的(分层的)行索引。例如:')
 air_quality_ = pd.concat([air_quality_pm25, air_quality_no2], keys=["PM25", "NO2"])
 print(air_quality_.head(air_quality_.shape[0]))
 print('- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - \n')
+
+print(f"""
+###########################################################################################
+#                 使用公共标识符连接表(Join tables using a common identifier)                 #
+###########################################################################################
+""")
+stations_coord = pd.read_csv("data/air_quality_stations.csv")
+print(stations_coord)
+print(air_quality)
+print('- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - \n')
+
+print('将站点元数据表提供的站点坐标添加到测量表的相应行中。')
+# merge 函数支持多个连接选项，类似于数据库风格的操作。
+# air_quality.air_quality == stations_coord.location
+air_quality = pd.merge(air_quality, stations_coord, how="left", on="location")
+print(air_quality)
+print('- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - \n')
+
+print(f'将参数元数据表提供的参数完整描述和名称添加到测量表中')
+air_quality_parameters = pd.read_csv("data/air_quality_parameters.csv")
+print(air_quality_parameters)
+print('* * * * * *')
+# air_quality.parameter == air_quality_parameters.id
+air_quality = pd.merge(air_quality, air_quality_parameters,
+                       how='left', left_on='parameter', right_on='id')
+print(air_quality)
+print('- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - \n')
+
+'''
+REMEMBER
+● Multiple tables can be concatenated both column-wise and row-wise using the concat function.
+● For database-like merging/joining of tables, use the merge function.
+'''
