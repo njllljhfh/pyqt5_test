@@ -1,32 +1,34 @@
 # -*- coding:utf-8 -*-
-# __source__ = "《设计模式之禅》--- 观察者模式-观察者模式的扩展 --- P-292"
+# __source__ = "《设计模式之禅》--- 观察者模式-观察者模式的扩展"
+from __future__ import annotations
 
+from typing import List
 
-""" ============================== 接口 =============================="""
+""" ============================== 接口、基类 =============================="""
 
 
 # 观察者接口
-class Observer(object):
-    def update(self, observer, obj: object):
+class IObserver(object):
+    def update(self, observable: AbstractObservable, obj: object):
         """
-        :param observer: 被观察者
-        :param obj: 要传递的数据对象 DTO(Data Transfer Object)。由被观察者生成，有观察者消费。
+        :param observable: 被观察者
+        :param obj: 要传递的数据对象 DTO(Data Transfer Object)。由被观察者生成，由观察者消费。
         :return:
         """
         pass
 
 
-# 被观察者接口
-class Observable(object):
+# 被观察者抽象类
+class AbstractObservable(object):
     def __init__(self):
         # 所有的观察者
-        self._observerList = []
+        self._observerList: List[IObserver] = []
 
-    def addObserver(self, observer: Observer):
+    def addObserver(self, observer: IObserver):
         """添加观察者"""
         self._observerList.append(observer)
 
-    def deleteObserver(self, observer: Observer):
+    def deleteObserver(self, observer: IObserver):
         """删除观察者"""
         self._observerList.remove(observer)
 
@@ -52,7 +54,7 @@ class IHanFeiZi(object):
 
 
 # 被观察者的实现类
-class HanFeiZi(IHanFeiZi, Observable):
+class HanFeiZi(IHanFeiZi, AbstractObservable):
 
     def haveBreakfast(self):
         print(f'韩非子：开始吃饭了。。。')
@@ -64,9 +66,9 @@ class HanFeiZi(IHanFeiZi, Observable):
 
 
 # 具体观察者
-class LiSi(Observer):
+class LiSi(IObserver):
 
-    def update(self, observer, obj: object):
+    def update(self, observable, obj: object):
         print(f'李斯：观察到韩非子活动，开始向老板汇报了。。。')
         self._reportToQinShiHuang(obj)
         print(f'李斯：汇报完毕。。。')
@@ -78,7 +80,7 @@ class LiSi(Observer):
         print(f'李斯：报告，秦老板！韩非子有活动了--->{obj}')
 
 
-class WangSi(Observer):
+class WangSi(IObserver):
 
     def update(self, observer, obj: object):
         print(f'王斯：观察到韩非子活动，王斯自己也开始活动了。。。')
@@ -92,7 +94,7 @@ class WangSi(Observer):
         print(f'王斯：因为{reportContext}，--所以我悲伤呀!')
 
 
-class LiuSi(Observer):
+class LiuSi(IObserver):
 
     def update(self, observer, obj: str):
         print(f'刘斯：观察到韩非子活动，刘斯开始动作了。。。')

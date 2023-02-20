@@ -1,5 +1,5 @@
 # -*- coding:utf-8 -*-
-# __source__ = "《设计模式之禅》--- 开闭原则 --- P-61"
+# __source__ = "《设计模式之禅》--- 开闭原则 --- P-64"
 
 """
 注意：
@@ -7,19 +7,21 @@
     底层模块的变更，必然要有高层模块进行耦合，否则就是一段孤立无意义的代码片段。
 """
 
+from typing import List
+
 
 # 书籍接口
 class IBook(object):
 
-    def get_name(self):
+    def get_name(self) -> str:
         """书籍有名称"""
         pass
 
-    def get_price(self):
+    def get_price(self) -> int:
         """书籍有售价"""
         pass
 
-    def get_author(self):
+    def get_author(self) -> str:
         """书籍有作者"""
         pass
 
@@ -28,30 +30,30 @@ class IBook(object):
 class NovelBook(IBook):
 
     def __init__(self, name, price, author):
-        self.name = name
-        self.price = price
-        self.author = author
+        self._name = name
+        self._price = price
+        self._author = author
 
-    def get_name(self):
-        return self.name
+    def get_name(self) -> str:
+        return self._name
 
-    def get_price(self):
-        return self.price
+    def get_price(self) -> int:
+        return self._price
 
-    def get_author(self):
-        return self.author
+    def get_author(self) -> str:
+        return self._author
 
 
 # 有了打折的需求后，扩展出来的小说类
 # 打折销售的小说类
 class OffNovelBook(NovelBook):
 
-    def get_price(self):
-        if self.price > 4000:
+    def get_price(self) -> int:
+        if self._price > 4000:
             # 原价大于40元打九折
-            off_price = self.price * 0.9
+            off_price = self._price * 0.9
         else:
-            off_price = self.price * 0.8
+            off_price = self._price * 0.8
         return off_price
 
 
@@ -59,7 +61,7 @@ class OffNovelBook(NovelBook):
 class BookStore(object):
 
     def __init__(self):
-        self.book_list = list()
+        self.book_list: List[IBook] = list()
         self._generate_book_list()
 
     def _generate_book_list(self):
@@ -72,7 +74,6 @@ class BookStore(object):
     def main(self):
         print("---------书店卖出去的书籍记录如下:---------")
         for book in self.book_list:
-            # book: IBook
             print("{}{:<10s}\t{}{:<10s}\t{}{:10s}\t".format(
                 "数据名称: ", book.get_name(),
                 "书籍作者: ", book.get_author(),

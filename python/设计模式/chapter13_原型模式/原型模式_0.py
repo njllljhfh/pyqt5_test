@@ -1,9 +1,6 @@
 # -*- coding:utf-8 -*-
 # __source__ = "《设计模式之禅》--- 原型模式(Builder Pattern)_1 --- P-152"
 
-import copy
-
-
 # 广告信模板
 class AdvTemplate(object):
 
@@ -24,13 +21,8 @@ class AdvTemplate(object):
         return self.advContext
 
 
-class Cloneable(object):
-    def clone(self):
-        return copy.deepcopy(self)
-
-
 # 邮件类
-class Mail(Cloneable):
+class Mail(object):
 
     def __init__(self, advTemplate: AdvTemplate):
         # 收件人
@@ -91,11 +83,10 @@ class Client(object):
         mail.setTail('XX银行版权所有')
         while i < cls.MAX_COUNT:
             # 以下是每封邮件不同的地方
-            cloneMail = mail.clone()  # 这种不通过new关键字来产生一个对象，而是通过对象复制来实现的模式就叫做原型模式。
-            cloneMail.setAppellation(f'先生（女士）-{i}')
-            cloneMail.setReceiver(f'{i}' * 5 + '@' + f'{i}' * 8)
+            mail.setAppellation(f'先生（女士）-{i}')
+            mail.setReceiver(f'{i}' * 5 + '@' + f'{i}' * 8)
             # 然后发送邮件
-            cls.sendMail(cloneMail)
+            cls.sendMail(mail)
             i += 1
 
     # 发送邮件

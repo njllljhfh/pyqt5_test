@@ -4,8 +4,10 @@
 
 """ ============================== 接口 =============================="""
 
-
 # 观察者接口
+from typing import List
+
+
 class Observer(object):
     def update(self, context: str):
         pass
@@ -47,7 +49,7 @@ class HanFeiZi(IHanFeiZi, Observable):
 
     def __init__(self):
         # 所有的观察者
-        self._observerList = []
+        self._observerList: List[Observer] = []
 
     def addObserver(self, observer: Observer):
         """添加观察者"""
@@ -97,7 +99,7 @@ class WangSi(Observer):
     @staticmethod
     def _cry(reportContext: str):
         """一看韩非子有活动，他就痛哭"""
-        print(f'王斯：因为{reportContext}，--所以我悲伤呀!')
+        print(f'王斯：因为{reportContext}，————所以我悲伤呀!')
 
 
 class LiuSi(Observer):
@@ -111,7 +113,7 @@ class LiuSi(Observer):
     @staticmethod
     def _happy(reportContext: str):
         """一看韩非子有活动，他就快乐"""
-        print(f'刘斯：因为{reportContext}，--所以我快乐呀!')
+        print(f'刘斯：因为{reportContext}，————所以我快乐呀!')
 
 
 """============================== 场景类 =============================="""

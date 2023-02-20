@@ -19,7 +19,7 @@ class HanFeiZi(IHanFeiZi):
 
     def __init__(self):
         # 把李斯声明出来
-        self._liSi: LiSi = LiSi()
+        self._liSi: LiSi = LiSi()  # 注意：这里违背了"开闭原则"
 
     def haveBreakfast(self):
         print(f'韩非子：开始吃饭了。。。')

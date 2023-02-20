@@ -16,7 +16,7 @@ class Producer(Process):
         self._keys = keys
 
     def run(self) -> None:
-        self._redis_mg = RedisManagement()
+        self._redis_mg = RedisManagement(ip='10.0.2.20', port=6379)
         self._redis_mg.conn.delete(*self._keys)
         s = 2
         ls_name = self._keys[0]
@@ -34,9 +34,9 @@ class Consumer(Process):
         self._keys = keys
 
     def run(self) -> None:
-        self._redis_mg = RedisManagement()
+        self._redis_mg = RedisManagement(ip='10.0.2.20', port=6379)
         print(f'[consumer] 等待redis列表 "{self._keys}" 中的数据。')
-        # 0 表示一直阻塞，直到获取的数据。
+        # 0 表示一直阻塞，直到获取到数据
         print(f'[consumer] 获取到的数据：{self._redis_mg.conn.brpop(self._keys, 0)}')
 
 

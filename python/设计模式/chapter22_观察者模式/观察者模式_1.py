@@ -45,7 +45,7 @@ class HanFeiZi(IHanFeiZi):
     def isHavingFun(self):
         return self._isHavingFun
 
-    def setHavingFun(self, value):
+    def setHavingFun(self, value: bool):
         self._isHavingFun = value
 
 
@@ -108,7 +108,7 @@ class Client(object):
         watchBreakfast = Spy(hanFeiZi, liSi, 'breakfast')
         watchBreakfast.start()
 
-        # 观察鱼类情况
+        # 观察娱乐情况
         watchFun = Spy(hanFeiZi, liSi, 'fun')
         watchFun.start()
 
