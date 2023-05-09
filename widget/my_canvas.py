@@ -12,9 +12,15 @@ from qtpy import QtWidgets
 logger = logging.getLogger(__name__)
 
 from PyQt5 import QtGui
-from PyQt5.QtGui import QPaintEvent, QPixmap, QResizeEvent, QPainterPath, QCursor
+from PyQt5.QtGui import QPaintEvent, QPixmap, QResizeEvent, QPainterPath, QCursor, QMouseEvent
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QGridLayout, QApplication, QSizePolicy, QMessageBox, \
     QCheckBox
+
+"""
+1、标注分层
+2、鼠标左键按下时，隐藏已勾选图层的缺陷
+3、鼠标左键松开时，显示已勾选图层的缺陷
+"""
 
 QSS = """
 ImageCanvas {
@@ -129,7 +135,7 @@ class ImageCanvas(QWidget):
         self.scale_h = 1
         self._painter = QtGui.QPainter()
         self.original_pix = QPixmap()
-        self.current_pix = None
+        self.current_pix = QPixmap()
         self.mouse_x = 0
         self.mouse_y = 0
 
@@ -151,8 +157,11 @@ class ImageCanvas(QWidget):
         self.change_img_ratio_signal.connect(self.bbox_label_layer.set_ratio)
         self.change_img_ratio_signal.connect(self.mask_label_layer.set_ratio)
         # 设置鼠标位置
-        self.bbox_label_layer.set_mouse_position_signal.connect(self.mask_label_layer.set_mouse_position_handler)
-        self.mask_label_layer.set_mouse_position_signal.connect(self.bbox_label_layer.set_mouse_position_handler)
+        self.bbox_label_layer.signal_mousePosition.connect(self.mask_label_layer.slot_mousePosition)
+        self.mask_label_layer.signal_mousePosition.connect(self.bbox_label_layer.slot_mousePosition)
+        # 鼠标左键状态
+        self.bbox_label_layer.signal_leftButtonPress.connect(self.mask_label_layer.slot_leftButtonPress)
+        self.mask_label_layer.signal_leftButtonPress.connect(self.bbox_label_layer.slot_leftButtonPress)
 
     def load_image(self, image_bytes=None):
         """ 加载背景图的方法 """
@@ -251,7 +260,10 @@ class BaseLabelLayer(QWidget):
     """标注图层-基类"""
 
     # 鼠标位置变化
-    set_mouse_position_signal = pyqtSignal(int, int)
+    signal_mousePosition = pyqtSignal(int, int)
+
+    # 鼠标左键状态
+    signal_leftButtonPress = pyqtSignal(bool)
 
     def __init__(self, *args, parent=None):
         super().__init__(parent, *args)
@@ -266,6 +278,8 @@ class BaseLabelLayer(QWidget):
         self.mouse_y = 0
 
         self.shape_original_data = [[1500, 1500, 100, 100]]
+
+        self.leftButtonPress = False
 
     @pyqtSlot(float)
     def set_ratio(self, ratio):
@@ -285,7 +299,8 @@ class BaseLabelLayer(QWidget):
             self._painter.translate(QPoint(0, 0))  # 设置原点位置(0, 0)
 
             # 绘制标注数据
-            self.draw_shapes()
+            if not self.leftButtonPress:
+                self.draw_shapes()
 
             # TODO: 放大镜
             # if self._show_magnifying_glass and (not self.magnifying_glass_pix.isNull()):
@@ -327,21 +342,40 @@ class BaseLabelLayer(QWidget):
             pos = ev.pos()
             self.mouse_x = pos.x()
             self.mouse_y = pos.y()
-            logger.info(f"{self.objectName()}---mouse_x_y = {(self.mouse_x,self.mouse_y)}")
+            logger.info(f"{self.objectName()}---mouse_x_y = {(self.mouse_x, self.mouse_y)}")
             # # 不发信号的话，其他的图层中的标签的线宽就不会因为鼠标移动而变化
-            # self.set_mouse_position_signal.emit(self.mouse_x, self.mouse_y)
+            self.signal_mousePosition.emit(self.mouse_x, self.mouse_y)
             self.update()
         except Exception as e:
             logger.error(f"Error:{e}", exc_info=True)
             message_box = QMessageBox(self)
             message_box.warning(self, "警告", str(e), QMessageBox.Yes, QMessageBox.Yes)
 
+    def mousePressEvent(self, ev: QMouseEvent) -> None:
+        if ev.button() == Qt.LeftButton:
+            self.leftButtonPress = True
+            self.signal_leftButtonPress.emit(True)
+            self.update()
+            print("左键按下")
+
+    def mouseReleaseEvent(self, ev: QMouseEvent) -> None:
+        if ev.button() == Qt.LeftButton:
+            self.leftButtonPress = False
+            self.signal_leftButtonPress.emit(False)
+            self.update()
+            print("左键松开")
+
     @pyqtSlot(int, int)
-    def set_mouse_position_handler(self, x, y):
+    def slot_mousePosition(self, x, y):
         """设置鼠标位置"""
         self.mouse_x = x
         self.mouse_y = y
-        logger.info(f"{self.objectName()}---set_mouse_position = {(self.mouse_x,self.mouse_y)}")
+        logger.info(f"{self.objectName()}---set_mouse_position = {(self.mouse_x, self.mouse_y)}")
+        self.update()
+
+    @pyqtSlot(bool)
+    def slot_leftButtonPress(self, status: bool):
+        self.leftButtonPress = status
         self.update()
 
 
