@@ -1,0 +1,585 @@
+FileVersion 1 7;
+FileTimestamp 06-27-2023 09:59:57;
+TiffSpec 6.0 NA R;
+InspectionStationID "RudolphTechnologies" "XCluster" "AOI - 32"; 
+SampleType WAFER;
+ResultTimestamp 06-27-2023 09:59:57;
+LotID "Test";
+SampleSize 1 200;
+SetupID "777_111_test" 02-14-2022 20:59:22;
+DeviceID "1002";
+StepID "2AI09FMP1";
+SampleOrientationMarkType NOTCH;
+OrientationMarkLocation DOWN;
+DiePitch 1.0000 1.0000;
+DieOrigin -96151.687 -92564.570;
+WaferID "Test";
+Slot 1;
+SampleCenterLocation 0.000 0.000;
+ClassLookup 47
+0 "Accept"
+1 "Die Alignment Fail"
+101 "SurfaceDefect"
+102 "Particle"
+103 "Adhesiver Residue"
+104 "Missing_Bump"
+105 "Large_Bump"
+106 "Small_Bump"
+107 "Deformed_Bump"
+108 "Scratch_Bump"
+109 "Bump_Bridge"
+110 "Foreign_Bump"
+111 "Pushing_Bump"
+112 "Die_hole"
+113 "Missing_Components"
+114 "Die_Discolor"
+115 "Mark"
+116 "PI_hole"
+117 "PI_Black_dot"
+118 "Bubble"
+119 "RDL_Short"
+120 "RDL_Open"
+121 "RDL_Dot"
+122 "RDL_Oxidize"
+123 "RDL_Scratch"
+124 "Scratch_Other"
+125 "Flux_Residue"
+126 "Stannize"
+127 "UBM_Residue"
+201 "Pad Size Overlimit"
+202 "Pad X Migration"
+203 "Pad Y Migration"
+204 "Big Mark"
+205 "No Mark"
+206 "PM Num Much Overlimit"
+207 "PM Num Little Overlimit"
+208 "PM Migration"
+209 "PM Touching The Pad"
+300 "Normal Size Bump"
+301 "Bigger Bump"
+302 "Smaller Bump"
+303 "Bump Migration"
+304 "Normal Height Bump"
+305 "Higher Bump"
+306 "Lower Bump"
+307 "Normal Cop"
+308 "Cop";
+SampleDieMap 100
+0 9
+1 9
+2 9
+3 9
+4 9
+5 9
+6 9
+7 9
+8 9
+9 9
+0 8
+1 8
+2 8
+3 8
+4 8
+5 8
+6 8
+7 8
+8 8
+9 8
+0 7
+1 7
+2 7
+3 7
+4 7
+5 7
+6 7
+7 7
+8 7
+9 7
+0 6
+1 6
+2 6
+3 6
+4 6
+5 6
+6 6
+7 6
+8 6
+9 6
+0 5
+1 5
+2 5
+3 5
+4 5
+5 5
+6 5
+7 5
+8 5
+9 5
+0 4
+1 4
+2 4
+3 4
+4 4
+5 4
+6 4
+7 4
+8 4
+9 4
+0 3
+1 3
+2 3
+3 3
+4 3
+5 3
+6 3
+7 3
+8 3
+9 3
+0 2
+1 2
+2 2
+3 2
+4 2
+5 2
+6 2
+7 2
+8 2
+9 2
+0 1
+1 1
+2 1
+3 1
+4 1
+5 1
+6 1
+7 1
+8 1
+9 1
+0 0
+1 0
+2 0
+3 0
+4 0
+5 0
+6 0
+7 0
+8 0
+9 0;
+InspectionTest 1;
+SampleTestPlan  100
+0 9
+1 9
+2 9
+3 9
+4 9
+5 9
+6 9
+7 9
+8 9
+9 9
+0 8
+1 8
+2 8
+3 8
+4 8
+5 8
+6 8
+7 8
+8 8
+9 8
+0 7
+1 7
+2 7
+3 7
+4 7
+5 7
+6 7
+7 7
+8 7
+9 7
+0 6
+1 6
+2 6
+3 6
+4 6
+5 6
+6 6
+7 6
+8 6
+9 6
+0 5
+1 5
+2 5
+3 5
+4 5
+5 5
+6 5
+7 5
+8 5
+9 5
+0 4
+1 4
+2 4
+3 4
+4 4
+5 4
+6 4
+7 4
+8 4
+9 4
+0 3
+1 3
+2 3
+3 3
+4 3
+5 3
+6 3
+7 3
+8 3
+9 3
+0 2
+1 2
+2 2
+3 2
+4 2
+5 2
+6 2
+7 2
+8 2
+9 2
+0 1
+1 1
+2 1
+3 1
+4 1
+5 1
+6 1
+7 1
+8 1
+9 1
+0 0
+1 0
+2 0
+3 0
+4 0
+5 0
+6 0
+7 0
+8 0
+9 0;
+AreaPerTest 0.000;
+TiffFileName col2row9x0y0.png;
+DefectRecordSpec 19 DEFECTID X Y XREL YREL XINDEX YINDEX XSIZE YSIZE DEFECTAREA DSIZE CLASSNUMBER TEST CLUSTERNUMBER ROUGHBINNUMBER FINEBINNUMBER REVIEWSAMPLE IMAGECOUNT IMAGELIST;
+DefectList
+1 0.0000 0.0000 0.0000 0.0000 2 9 48.0000 45.0000 484.0000 484.0000 101 1 0 0 0 1 1 0;
+TiffFileName col3row9x0y1.png;
+DefectList
+2 0.0000 0.0000 0.0000 0.0000 3 9 6.0000 6.0000 26.0000 26.0000 101 1 0 0 0 1 1 0;
+TiffFileName col4row9x0y0.png;
+DefectList
+3 0.0000 0.0000 0.0000 0.0000 4 9 21.0000 20.0000 312.0000 312.0000 101 1 0 0 0 1 1 0;
+TiffFileName col5row9x0y0.png;
+DefectList
+4 0.0000 0.0000 0.0000 0.0000 5 9 2.0000 1.0000 2.0000 2.0000 101 1 0 0 0 1 1 0;
+TiffFileName col5row9x0y1.png;
+DefectList
+5 0.0000 0.0000 0.0000 0.0000 5 9 2.0000 1.0000 2.0000 2.0000 101 1 0 0 0 1 1 0;
+TiffFileName col7row9x0y0.png;
+DefectList
+6 0.0000 0.0000 0.0000 0.0000 7 9 35.0000 28.0000 301.0000 301.0000 101 1 0 0 0 1 1 0;
+TiffFileName col9row9x0y0.png;
+DefectList
+7 0.0000 0.0000 0.0000 0.0000 9 9 2.0000 2.0000 3.0000 3.0000 101 1 0 0 0 1 1 0;
+TiffFileName col9row9x0y1.png;
+DefectList
+8 0.0000 0.0000 0.0000 0.0000 9 9 2.0000 2.0000 3.0000 3.0000 101 1 0 0 0 1 1 0;
+TiffFileName col0row8x0y0.png;
+DefectList
+9 0.0000 0.0000 0.0000 0.0000 0 8 3.0000 3.0000 7.0000 7.0000 101 1 0 0 0 1 1 0;
+TiffFileName col1row8x0y0.png;
+DefectList
+10 0.0000 0.0000 0.0000 0.0000 1 8 31.0000 56.0000 542.0000 542.0000 101 1 0 0 0 1 1 0;
+TiffFileName col2row8x0y0.png;
+DefectList
+11 0.0000 0.0000 0.0000 0.0000 2 8 9.0000 5.0000 36.0000 36.0000 101 1 0 0 0 1 1 0;
+TiffFileName col3row8x0y0.png;
+DefectList
+12 0.0000 0.0000 0.0000 0.0000 3 8 3.0000 2.0000 6.0000 6.0000 101 1 0 0 0 1 1 0;
+TiffFileName col4row8x0y0.png;
+DefectList
+13 0.0000 0.0000 0.0000 0.0000 4 8 5.0000 4.0000 15.0000 15.0000 101 1 0 0 0 1 1 0;
+TiffFileName col5row8x0y0.png;
+DefectList
+14 0.0000 0.0000 0.0000 0.0000 5 8 40.0000 25.0000 453.0000 453.0000 101 1 0 0 0 1 1 0;
+TiffFileName col5row8x0y1.png;
+DefectList
+15 0.0000 0.0000 0.0000 0.0000 5 8 40.0000 25.0000 453.0000 453.0000 101 1 0 0 0 1 1 0;
+TiffFileName col6row8x0y0.png;
+DefectList
+16 0.0000 0.0000 0.0000 0.0000 6 8 37.0000 41.0000 710.0000 710.0000 101 1 0 0 0 1 1 0;
+TiffFileName col7row8x0y0.png;
+DefectList
+17 0.0000 0.0000 0.0000 0.0000 7 8 2.0000 1.0000 2.0000 2.0000 101 1 0 0 0 1 1 0;
+TiffFileName col8row8x0y0.png;
+DefectList
+18 0.0000 0.0000 0.0000 0.0000 8 8 3.0000 5.0000 12.0000 12.0000 101 1 0 0 0 1 1 0;
+TiffFileName col9row8x0y0.png;
+DefectList
+19 0.0000 0.0000 0.0000 0.0000 9 8 3.0000 2.0000 6.0000 6.0000 101 1 0 0 0 1 1 0;
+TiffFileName col0row7x0y0.png;
+DefectList
+20 0.0000 0.0000 0.0000 0.0000 0 7 5.0000 4.0000 12.0000 12.0000 101 1 0 0 0 1 1 0;
+TiffFileName col2row7x0y0.png;
+DefectList
+21 0.0000 0.0000 0.0000 0.0000 2 7 7.0000 5.0000 26.0000 26.0000 101 1 0 0 0 1 1 0;
+TiffFileName col3row7x0y0.png;
+DefectList
+22 0.0000 0.0000 0.0000 0.0000 3 7 6.0000 4.0000 21.0000 21.0000 101 1 0 0 0 1 1 0;
+TiffFileName col4row7x0y0.png;
+DefectList
+23 0.0000 0.0000 0.0000 0.0000 4 7 12.0000 9.0000 87.0000 87.0000 101 1 0 0 0 1 1 0;
+TiffFileName col5row7x0y0.png;
+DefectList
+24 0.0000 0.0000 0.0000 0.0000 5 7 40.0000 32.0000 656.0000 656.0000 101 1 0 0 0 1 1 0;
+TiffFileName col5row7x0y1.png;
+DefectList
+25 0.0000 0.0000 0.0000 0.0000 5 7 40.0000 32.0000 656.0000 656.0000 101 1 0 0 0 1 1 0;
+TiffFileName col6row7x0y0.png;
+DefectList
+26 0.0000 0.0000 0.0000 0.0000 6 7 20.0000 21.0000 300.0000 300.0000 101 1 0 0 0 1 1 0;
+TiffFileName col6row7x0y1.png;
+DefectList
+27 0.0000 0.0000 0.0000 0.0000 6 7 20.0000 21.0000 300.0000 300.0000 101 1 0 0 0 1 1 0;
+TiffFileName col9row7x0y0.png;
+DefectList
+28 0.0000 0.0000 0.0000 0.0000 9 7 37.0000 33.0000 414.0000 414.0000 101 1 0 0 0 1 1 0;
+TiffFileName col9row7x0y1.png;
+DefectList
+29 0.0000 0.0000 0.0000 0.0000 9 7 37.0000 33.0000 414.0000 414.0000 101 1 0 0 0 1 1 0;
+TiffFileName col0row6x0y0.png;
+DefectList
+30 0.0000 0.0000 0.0000 0.0000 0 6 17.0000 12.0000 146.0000 146.0000 101 1 0 0 0 1 1 0;
+TiffFileName col1row6x0y0.png;
+DefectList
+31 0.0000 0.0000 0.0000 0.0000 1 6 6.0000 4.0000 20.0000 20.0000 101 1 0 0 0 1 1 0;
+TiffFileName col3row6x0y0.png;
+DefectList
+32 0.0000 0.0000 0.0000 0.0000 3 6 15.0000 13.0000 130.0000 130.0000 101 1 0 0 0 1 1 0;
+TiffFileName col4row6x0y0.png;
+DefectList
+33 0.0000 0.0000 0.0000 0.0000 4 6 11.0000 15.0000 90.0000 90.0000 101 1 0 0 0 1 1 0;
+TiffFileName col5row6x0y0.png;
+DefectList
+34 0.0000 0.0000 0.0000 0.0000 5 6 10.0000 7.0000 53.0000 53.0000 101 1 0 0 0 1 1 0;
+TiffFileName col5row6x0y1.png;
+DefectList
+35 0.0000 0.0000 0.0000 0.0000 5 6 10.0000 7.0000 53.0000 53.0000 101 1 0 0 0 1 1 0;
+TiffFileName col6row6x0y0.png;
+DefectList
+36 0.0000 0.0000 0.0000 0.0000 6 6 8.0000 7.0000 40.0000 40.0000 101 1 0 0 0 1 1 0;
+TiffFileName col6row6x0y1.png;
+DefectList
+37 0.0000 0.0000 0.0000 0.0000 6 6 8.0000 7.0000 40.0000 40.0000 101 1 0 0 0 1 1 0;
+TiffFileName col7row6x0y0.png;
+DefectList
+38 0.0000 0.0000 0.0000 0.0000 7 6 23.0000 19.0000 233.0000 233.0000 101 1 0 0 0 1 1 0;
+TiffFileName col7row6x0y1.png;
+DefectList
+39 0.0000 0.0000 0.0000 0.0000 7 6 23.0000 19.0000 233.0000 233.0000 101 1 0 0 0 1 1 0;
+TiffFileName col8row6x0y0.png;
+DefectList
+40 0.0000 0.0000 0.0000 0.0000 8 6 4.0000 4.0000 11.0000 11.0000 101 1 0 0 0 1 1 0;
+TiffFileName col9row6x0y0.png;
+DefectList
+41 0.0000 0.0000 0.0000 0.0000 9 6 18.0000 21.0000 176.0000 176.0000 101 1 0 0 0 1 1 0;
+TiffFileName col9row6x0y1.png;
+DefectList
+42 0.0000 0.0000 0.0000 0.0000 9 6 18.0000 21.0000 176.0000 176.0000 101 1 0 0 0 1 1 0;
+TiffFileName col0row5x0y0.png;
+DefectList
+43 0.0000 0.0000 0.0000 0.0000 0 5 9.0000 6.0000 40.0000 40.0000 101 1 0 0 0 1 1 0;
+TiffFileName col1row5x0y0.png;
+DefectList
+44 0.0000 0.0000 0.0000 0.0000 1 5 15.0000 10.0000 114.0000 114.0000 101 1 0 0 0 1 1 0;
+TiffFileName col2row5x0y0.png;
+DefectList
+45 0.0000 0.0000 0.0000 0.0000 2 5 6.0000 5.0000 22.0000 22.0000 101 1 0 0 0 1 1 0;
+TiffFileName col3row5x0y0.png;
+DefectList
+46 0.0000 0.0000 0.0000 0.0000 3 5 24.0000 32.0000 304.0000 304.0000 101 1 0 0 0 1 1 0;
+TiffFileName col4row5x0y0.png;
+DefectList
+47 0.0000 0.0000 0.0000 0.0000 4 5 1.0000 2.0000 2.0000 2.0000 101 1 0 0 0 1 1 0;
+TiffFileName col5row5x0y0.png;
+DefectList
+48 0.0000 0.0000 0.0000 0.0000 5 5 13.0000 20.0000 108.0000 108.0000 101 1 0 0 0 1 1 0;
+TiffFileName col6row5x0y0.png;
+DefectList
+49 0.0000 0.0000 0.0000 0.0000 6 5 9.0000 14.0000 63.0000 63.0000 101 1 0 0 0 1 1 0;
+TiffFileName col8row5x0y0.png;
+DefectList
+50 0.0000 0.0000 0.0000 0.0000 8 5 8.0000 7.0000 45.0000 45.0000 101 1 0 0 0 1 1 0;
+TiffFileName col9row5x0y0.png;
+DefectList
+51 0.0000 0.0000 0.0000 0.0000 9 5 23.0000 13.0000 176.0000 176.0000 101 1 0 0 0 1 1 0;
+TiffFileName col9row5x0y1.png;
+DefectList
+52 0.0000 0.0000 0.0000 0.0000 9 5 23.0000 13.0000 176.0000 176.0000 101 1 0 0 0 1 1 0;
+TiffFileName col0row4x0y0.png;
+DefectList
+53 0.0000 0.0000 0.0000 0.0000 0 4 13.0000 15.0000 146.0000 146.0000 101 1 0 0 0 1 1 0;
+TiffFileName col1row4x0y0.png;
+DefectList
+54 0.0000 0.0000 0.0000 0.0000 1 4 48.0000 63.0000 663.0000 663.0000 101 1 0 0 0 1 1 0;
+TiffFileName col2row4x0y0.png;
+DefectList
+55 0.0000 0.0000 0.0000 0.0000 2 4 12.0000 7.0000 52.0000 52.0000 101 1 0 0 0 1 1 0;
+TiffFileName col3row4x0y0.png;
+DefectList
+56 0.0000 0.0000 0.0000 0.0000 3 4 23.0000 22.0000 317.0000 317.0000 101 1 0 0 0 1 1 0;
+TiffFileName col5row4x0y0.png;
+DefectList
+57 0.0000 0.0000 0.0000 0.0000 5 4 34.0000 27.0000 354.0000 354.0000 101 1 0 0 0 1 1 0;
+TiffFileName col5row4x0y1.png;
+DefectList
+58 0.0000 0.0000 0.0000 0.0000 5 4 34.0000 27.0000 354.0000 354.0000 101 1 0 0 0 1 1 0;
+TiffFileName col6row4x0y0.png;
+DefectList
+59 0.0000 0.0000 0.0000 0.0000 6 4 3.0000 20.0000 22.0000 22.0000 101 1 0 0 0 1 1 0;
+TiffFileName col6row4x0y1.png;
+DefectList
+60 0.0000 0.0000 0.0000 0.0000 6 4 3.0000 20.0000 22.0000 22.0000 101 1 0 0 0 1 1 0;
+TiffFileName col7row4x0y0.png;
+DefectList
+61 0.0000 0.0000 0.0000 0.0000 7 4 20.0000 18.0000 262.0000 262.0000 101 1 0 0 0 1 1 0;
+TiffFileName col7row4x0y1.png;
+DefectList
+62 0.0000 0.0000 0.0000 0.0000 7 4 20.0000 18.0000 262.0000 262.0000 101 1 0 0 0 1 1 0;
+TiffFileName col0row3x0y0.png;
+DefectList
+63 0.0000 0.0000 0.0000 0.0000 0 3 59.0000 39.0000 859.0000 859.0000 101 1 0 0 0 1 1 0;
+TiffFileName col1row3x0y0.png;
+DefectList
+64 0.0000 0.0000 0.0000 0.0000 1 3 4.0000 4.0000 11.0000 11.0000 101 1 0 0 0 1 1 0;
+TiffFileName col3row3x0y0.png;
+DefectList
+65 0.0000 0.0000 0.0000 0.0000 3 3 19.0000 17.0000 198.0000 198.0000 101 1 0 0 0 1 1 0;
+TiffFileName col4row3x0y0.png;
+DefectList
+66 0.0000 0.0000 0.0000 0.0000 4 3 11.0000 10.0000 76.0000 76.0000 101 1 0 0 0 1 1 0;
+TiffFileName col5row3x0y0.png;
+DefectList
+67 0.0000 0.0000 0.0000 0.0000 5 3 28.0000 21.0000 355.0000 355.0000 101 1 0 0 0 1 1 0;
+TiffFileName col6row3x0y0.png;
+DefectList
+68 0.0000 0.0000 0.0000 0.0000 6 3 41.0000 392.0000 396.0000 396.0000 101 1 0 0 0 1 1 0;
+TiffFileName col6row3x0y1.png;
+DefectList
+69 0.0000 0.0000 0.0000 0.0000 6 3 41.0000 392.0000 396.0000 396.0000 101 1 0 0 0 1 1 0;
+TiffFileName col7row3x0y0.png;
+DefectList
+70 0.0000 0.0000 0.0000 0.0000 7 3 2.0000 2.0000 4.0000 4.0000 101 1 0 0 0 1 1 0;
+TiffFileName col8row3x0y0.png;
+DefectList
+71 0.0000 0.0000 0.0000 0.0000 8 3 34.0000 29.0000 484.0000 484.0000 101 1 0 0 0 1 1 0;
+TiffFileName col9row3x0y0.png;
+DefectList
+72 0.0000 0.0000 0.0000 0.0000 9 3 52.0000 43.0000 532.0000 532.0000 101 1 0 0 0 1 1 0;
+TiffFileName col0row2x0y0.png;
+DefectList
+73 0.0000 0.0000 0.0000 0.0000 0 2 7.0000 5.0000 24.0000 24.0000 101 1 0 0 0 1 1 0;
+TiffFileName col0row2x0y1.png;
+DefectList
+74 0.0000 0.0000 0.0000 0.0000 0 2 7.0000 5.0000 24.0000 24.0000 101 1 0 0 0 1 1 0;
+TiffFileName col1row2x0y0.png;
+DefectList
+75 0.0000 0.0000 0.0000 0.0000 1 2 32.0000 34.0000 616.0000 616.0000 101 1 0 0 0 1 1 0;
+TiffFileName col2row2x0y0.png;
+DefectList
+76 0.0000 0.0000 0.0000 0.0000 2 2 4.0000 4.0000 13.0000 13.0000 101 1 0 0 0 1 1 0;
+TiffFileName col3row2x0y0.png;
+DefectList
+77 0.0000 0.0000 0.0000 0.0000 3 2 28.0000 19.0000 371.0000 371.0000 101 1 0 0 0 1 1 0;
+TiffFileName col4row2x0y0.png;
+DefectList
+78 0.0000 0.0000 0.0000 0.0000 4 2 35.0000 32.0000 473.0000 473.0000 101 1 0 0 0 1 1 0;
+TiffFileName col6row2x0y0.png;
+DefectList
+79 0.0000 0.0000 0.0000 0.0000 6 2 22.0000 32.0000 380.0000 380.0000 101 1 0 0 0 1 1 0;
+TiffFileName col7row2x0y0.png;
+DefectList
+80 0.0000 0.0000 0.0000 0.0000 7 2 5.0000 4.0000 11.0000 11.0000 101 1 0 0 0 1 1 0;
+TiffFileName col7row2x0y1.png;
+DefectList
+81 0.0000 0.0000 0.0000 0.0000 7 2 5.0000 4.0000 11.0000 11.0000 101 1 0 0 0 1 1 0;
+TiffFileName col0row1x0y0.png;
+DefectList
+82 0.0000 0.0000 0.0000 0.0000 0 1 2.0000 2.0000 4.0000 4.0000 101 1 0 0 0 1 1 0;
+TiffFileName col1row1x0y0.png;
+DefectList
+83 0.0000 0.0000 0.0000 0.0000 1 1 74.0000 67.0000 1058.0000 1058.0000 101 1 0 0 0 1 1 0;
+TiffFileName col1row1x0y1.png;
+DefectList
+84 0.0000 0.0000 0.0000 0.0000 1 1 74.0000 67.0000 1058.0000 1058.0000 101 1 0 0 0 1 1 0;
+TiffFileName col2row1x0y0.png;
+DefectList
+85 0.0000 0.0000 0.0000 0.0000 2 1 19.0000 13.0000 163.0000 163.0000 101 1 0 0 0 1 1 0;
+TiffFileName col3row1x0y0.png;
+DefectList
+86 0.0000 0.0000 0.0000 0.0000 3 1 7.0000 6.0000 26.0000 26.0000 101 1 0 0 0 1 1 0;
+TiffFileName col4row1x0y0.png;
+DefectList
+87 0.0000 0.0000 0.0000 0.0000 4 1 36.0000 18.0000 376.0000 376.0000 101 1 0 0 0 1 1 0;
+TiffFileName col5row1x0y0.png;
+DefectList
+88 0.0000 0.0000 0.0000 0.0000 5 1 31.0000 36.0000 452.0000 452.0000 101 1 0 0 0 1 1 0;
+TiffFileName col6row1x0y0.png;
+DefectList
+89 0.0000 0.0000 0.0000 0.0000 6 1 36.0000 38.0000 457.0000 457.0000 101 1 0 0 0 1 1 0;
+TiffFileName col7row1x0y0.png;
+DefectList
+90 0.0000 0.0000 0.0000 0.0000 7 1 88.0000 129.0000 1170.0000 1170.0000 101 1 0 0 0 1 1 0;
+TiffFileName col8row1x0y0.png;
+DefectList
+91 0.0000 0.0000 0.0000 0.0000 8 1 37.0000 26.0000 461.0000 461.0000 101 1 0 0 0 1 1 0;
+TiffFileName col8row1x0y1.png;
+DefectList
+92 0.0000 0.0000 0.0000 0.0000 8 1 37.0000 26.0000 461.0000 461.0000 101 1 0 0 0 1 1 0;
+TiffFileName col9row1x0y0.png;
+DefectList
+93 0.0000 0.0000 0.0000 0.0000 9 1 9.0000 6.0000 37.0000 37.0000 101 1 0 0 0 1 1 0;
+TiffFileName col0row0x0y0.png;
+DefectList
+94 0.0000 0.0000 0.0000 0.0000 0 0 11.0000 10.0000 79.0000 79.0000 101 1 0 0 0 1 1 0;
+TiffFileName col1row0x0y0.png;
+DefectList
+95 0.0000 0.0000 0.0000 0.0000 1 0 9.0000 7.0000 41.0000 41.0000 101 1 0 0 0 1 1 0;
+TiffFileName col2row0x0y0.png;
+DefectList
+96 0.0000 0.0000 0.0000 0.0000 2 0 4.0000 3.0000 11.0000 11.0000 101 1 0 0 0 1 1 0;
+TiffFileName col4row0x0y0.png;
+DefectList
+97 0.0000 0.0000 0.0000 0.0000 4 0 52.0000 28.0000 306.0000 306.0000 101 1 0 0 0 1 1 0;
+TiffFileName col5row0x0y0.png;
+DefectList
+98 0.0000 0.0000 0.0000 0.0000 5 0 23.0000 22.0000 300.0000 300.0000 101 1 0 0 0 1 1 0;
+TiffFileName col6row0x0y0.png;
+DefectList
+99 0.0000 0.0000 0.0000 0.0000 6 0 23.0000 25.0000 197.0000 197.0000 101 1 0 0 0 1 1 0;
+TiffFileName col7row0x0y0.png;
+DefectList
+100 0.0000 0.0000 0.0000 0.0000 7 0 35.0000 30.0000 520.0000 520.0000 101 1 0 0 0 1 1 0;
+TiffFileName col8row0x0y0.png;
+DefectList
+101 0.0000 0.0000 0.0000 0.0000 8 0 15.0000 19.0000 220.0000 220.0000 101 1 0 0 0 1 1 0;
+TiffFileName col9row0x0y0.png;
+DefectList
+102 0.0000 0.0000 0.0000 0.0000 9 0 32.0000 24.0000 435.0000 435.0000 101 1 0 0 0 1 1 0;
+TiffFileName col9row0x0y1.png;
+DefectList
+103 0.0000 0.0000 0.0000 0.0000 9 0 32.0000 24.0000 435.0000 435.0000 101 1 0 0 0 1 1 0;
+SummarySpec 5 TESTNO NDEFECT DEFDENSITY NDIE NDEFDIE;
+SummaryList
+1 162 0.718087 3732 142;
+WaferStatus P;
+EndOfFile;

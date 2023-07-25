@@ -4,13 +4,13 @@
 工厂方法模式-定义：
     Define an interface for creating an object, but let subclasses decide which class to instantiate.
     Factory Method lets a class defer instantiation to subclass.
-    定义一个用于创建对象的接口，让子类决定实例化哪一个类。工厂方法使一个雷的实例化延迟到其子类。
+    定义一个用于创建对象的接口，让子类决定实例化哪一个类。工厂方法使一个类的实例化延迟到其子类。
 """
 
 from typing import ClassVar
 
 
-# TODO(tip): 该通用代码是一个比较使用，易扩展的框架，读者可以根据实际项目需要进行扩展。
+# TODO(tip): 该通用代码是一个比较实用，易扩展的框架，读者可以根据实际项目需要进行扩展。
 
 # 抽象产品类
 class Product(object):
