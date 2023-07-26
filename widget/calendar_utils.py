@@ -1,5 +1,5 @@
 # -*- coding:utf-8 -*-
-# __author__ = njl
+# __author__ = "Dragon"
 import math
 from datetime import datetime, timedelta
 
@@ -10,16 +10,71 @@ class CalendarUtils(object):
     """
 
     @classmethod
-    def delta_day(cls, delta: int = 0) -> (datetime, datetime):
+    def now(cls) -> datetime:
+        """现在的时间"""
+        return datetime.now()
+
+    @classmethod
+    def generate_specified_datetime(cls, year=None, month=None, day=None,
+                                    hour=None, minute=None, second=None, microsecond=0) -> datetime:
+        """生成指定的日期时间，年月日时分秒"""
+        now = datetime.now()
+        specified_datetime = now.replace(year=year, month=month, day=day,
+                                         hour=hour, minute=minute, second=second, microsecond=microsecond)
+        return specified_datetime
+
+    @classmethod
+    def delta_minute(cls, delta: float = 0.) -> (datetime, datetime):
+        """
+        按分钟偏移
+        :param delta: 分钟偏移量(0不偏移, -1向过去偏移1分钟, -2向过去偏移2分钟, 1向未来偏移1分钟, 2向未来偏移2分钟, ...)
+        :return:
+        """
+        now = datetime.now()
+        if delta == 0:
+            _from, _to = now, now
+        elif delta > 0:
+            _from = now
+            _to = now + timedelta(minutes=delta)
+        else:
+            _from = now + timedelta(minutes=delta)
+            _to = now
+
+        return _from, _to
+
+    @classmethod
+    def delta_hour(cls, delta: float = 0.) -> (datetime, datetime):
+        """
+        按小时偏移
+        :param delta: 小时偏移量(0不偏移, -1向过去偏移1小时, -2向过去偏移2小时, 1向未来偏移1小时, 2向未来偏移2小时, ...)
+        :return:
+        """
+        now = datetime.now()
+        if delta == 0:
+            _from, _to = now, now
+        elif delta > 0:
+            _from = now
+            _to = now + timedelta(hours=delta)
+        else:
+            _from = now + timedelta(hours=delta)
+            _to = now
+
+        return _from, _to
+
+    @classmethod
+    def delta_day(cls, delta: int = 0, reference_date: datetime = None) -> (datetime, datetime):
         """
         根据偏移量获取日期
         :param delta: 日期偏移量(0今天, -1昨天, -2前天, 1明天, 2后天, ...)
+        :param reference_date: 基准日期(以此日期为基准做偏移)
         :return:
         """
-        _from = datetime.now() + timedelta(days=delta)
+        if not reference_date:
+            reference_date = datetime.now()
+        _from = reference_date + timedelta(days=delta)
         _from = _from.replace(hour=0, minute=0, second=0, microsecond=0)
 
-        _to = _from.replace(hour=23, minute=59, second=59, microsecond=99999)
+        _to = _from.replace(hour=23, minute=59, second=59, microsecond=999999)
         return _from, _to
 
     @classmethod
@@ -36,7 +91,7 @@ class CalendarUtils(object):
         _from = _from.replace(hour=0, minute=0, second=0, microsecond=0)
 
         _to = now + timedelta(days=(6 - week) + (7 * delta))
-        _to = _to.replace(hour=23, minute=59, second=59, microsecond=99999)
+        _to = _to.replace(hour=23, minute=59, second=59, microsecond=999999)
         return _from, _to
 
     @classmethod
@@ -46,11 +101,10 @@ class CalendarUtils(object):
         :param delta: 月份偏移量(0本月, -1上月, -2上上月，1下月, 2下下月, ...)
         :return: (目标月的起始日期，目标月的结束日期)
         """
-
         now = datetime.now()
         _from = datetime(*cls._target_month(now.year, now.month, delta), 1)
         _to = datetime(*cls._target_month(_from.year, _from.month, 1), 1) - timedelta(days=1)
-        _to = _to.replace(hour=23, minute=59, second=59, microsecond=99999)
+        _to = _to.replace(hour=23, minute=59, second=59, microsecond=999999)
         return _from, _to
 
     @classmethod
@@ -80,7 +134,7 @@ class CalendarUtils(object):
             year += 1
             end_month_of_quarter = 0
         _to = datetime(year, end_month_of_quarter + 1, 1) - timedelta(days=1)
-        _to = _to.replace(hour=23, minute=59, second=59, microsecond=99999)
+        _to = _to.replace(hour=23, minute=59, second=59, microsecond=999999)
         return _from, _to
 
     @classmethod
@@ -96,18 +150,75 @@ class CalendarUtils(object):
             start_year = 1
         _from = datetime(start_year, 1, 1)
         _to = datetime(_from.year + 1, 1, 1) - timedelta(days=1)
-        _to = _to.replace(hour=23, minute=59, second=59, microsecond=99999)
+        _to = _to.replace(hour=23, minute=59, second=59, microsecond=999999)
         return _from, _to
 
     @classmethod
-    def delta_all_date(cls) -> (datetime, datetime):
+    def delta_all_date(cls):
         """
         获取截止到今天为止的全部日期范围
         :return:
         """
         _from = datetime(1, 1, 1)
         _to = datetime.now()
-        _to = _to.replace(hour=23, minute=59, second=59, microsecond=99999)
+        _to = _to.replace(hour=23, minute=59, second=59, microsecond=999999)
+        return _from, _to
+
+    @classmethod
+    def day_shift(cls, reference_date: datetime = None):
+        """
+        白班
+        :param reference_date: 基准日期(以此日期为基准做偏移)
+        @return:
+        """
+        if not reference_date:
+            reference_date = datetime.now()
+        _from = cls.generate_specified_datetime(
+            year=reference_date.year, month=reference_date.month, day=reference_date.day,
+            hour=8, minute=0, second=0, microsecond=0
+        )
+        _to = cls.generate_specified_datetime(
+            year=reference_date.year, month=reference_date.month, day=reference_date.day,
+            hour=19, minute=59, second=59, microsecond=999999
+        )
+        return _from, _to
+
+    @classmethod
+    def night_shift(cls, reference_date: datetime = None):
+        """
+        夜班
+        :param reference_date: 基准日期(以此日期为基准做偏移)
+        @return:
+        """
+        if not reference_date:
+            reference_date = datetime.now()
+
+        if reference_date < reference_date.replace(hour=8, minute=0, second=0, microsecond=0):
+            # 昨天夜班
+            yesterday, _ = cls.delta_day(delta=-1, reference_date=reference_date)
+
+            _from = cls.generate_specified_datetime(
+                year=yesterday.year, month=yesterday.month, day=yesterday.day,
+                hour=20, minute=0, second=0, microsecond=0
+            )
+
+            _to = cls.generate_specified_datetime(
+                year=reference_date.year, month=reference_date.month, day=reference_date.day,
+                hour=7, minute=59, second=59, microsecond=999999
+            )
+        else:
+            # 今天夜班
+            _from = cls.generate_specified_datetime(
+                year=reference_date.year, month=reference_date.month, day=reference_date.day,
+                hour=20, minute=0, second=0, microsecond=0
+            )
+
+            tomorrow, _ = cls.delta_day(delta=1, reference_date=reference_date)
+
+            _to = cls.generate_specified_datetime(
+                year=tomorrow.year, month=tomorrow.month, day=tomorrow.day,
+                hour=7, minute=59, second=59, microsecond=999999
+            )
         return _from, _to
 
     @classmethod
@@ -140,7 +251,7 @@ class CalendarUtils(object):
 
 
 if __name__ == '__main__':
-    print("{:<8s}\t{}".format("当前日期:", datetime.now()))
+    print("{:<8s}\t{}".format("当前日期:", CalendarUtils.now()))
     print("*" * 60)
 
     print("{:<8s}\t{}".format("全部日期:", CalendarUtils.delta_all_date()))
@@ -190,3 +301,28 @@ if __name__ == '__main__':
     print(f"结束: {end_date.year} 年 {end_date.month} 月 {end_date.day} 日")
 
     print(f"type(start_date.strftime('%Y-%m-%d %H:%M:%S')) = {type(start_date.strftime('%Y-%m-%d %H:%M:%S'))}")
+
+    print(f"按小时偏移-近一小时 = {CalendarUtils.delta_hour(-0.5)}")
+
+    print(f"按分钟偏移-近10分钟 = {CalendarUtils.delta_minute(-0.5)}")
+    print("*" * 60)
+
+    # 今天
+    start_date, end_date = CalendarUtils.delta_day()
+    print(f"今天_格式化 = {start_date.strftime('%Y-%m-%d %H:%M:%S'), end_date.strftime('%Y-%m-%d %H:%M:%S')}")
+    # 白班(今天08:00:00-今天20:00:00)
+    start_date, end_date = CalendarUtils.day_shift()
+    print(f"白班(今天08:00:00-今天20:00:00) = {start_date, end_date}")
+    print(f"白班_格式化 = {start_date.strftime('%Y-%m-%d %H:%M:%S'), end_date.strftime('%Y-%m-%d %H:%M:%S')}")
+
+    # 夜班(20:00:00-08:00:00)
+    now = CalendarUtils.now()
+    now = now.replace(hour=8, minute=0, microsecond=0)  # 模拟今天夜班
+    start_date, end_date = CalendarUtils.night_shift(reference_date=now)
+    print(f"今天夜班(20:00:00-07:59:59) = {start_date, end_date}")
+    print(f"今天夜班_格式化 = {start_date.strftime('%Y-%m-%d %H:%M:%S'), end_date.strftime('%Y-%m-%d %H:%M:%S')}")
+    now = now.replace(hour=7, minute=59, microsecond=59)  # 模拟昨天夜班
+    start_date, end_date = CalendarUtils.night_shift(reference_date=now)
+    print(f"昨天夜班(20:00:00-07:59:59) = {start_date, end_date}")
+    print(f"昨天夜班_格式化 = {start_date.strftime('%Y-%m-%d %H:%M:%S'), end_date.strftime('%Y-%m-%d %H:%M:%S')}")
+    print("*" * 60)

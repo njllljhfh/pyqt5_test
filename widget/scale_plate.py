@@ -570,7 +570,7 @@ if __name__ == '__main__':
             # self.setMinimumSize(1000, 600)
 
             self.original_pix = QPixmap()
-            with open('C://test_image//el_vi_test_image//EL.jpg', 'rb') as f:
+            with open('D://test_image//el_vi_test_image//EL.jpg', 'rb') as f:
                 el_image_bytes = f.read()
 
             self.original_pix.loadFromData(el_image_bytes)
