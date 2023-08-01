@@ -118,19 +118,19 @@ class DatetimeSpan(QWidget):
         # 绑定事件
         self.combo_box.currentIndexChanged.connect(self._slot_combo_box_current_index_changed)
         # self.combo_box.activated.connect(self._slot_combo_box_current_index_changed)  # 点击combo_box的item时触发
-        self.start_datetime.dateTimeChanged.connect(self._slot_start_datetime_changed)
-        self.end_datetime.dateTimeChanged.connect(self._slot_end_datetime_changed)
+        # self.start_datetime.dateTimeChanged.connect(self._start_datetime_changed)
+        # self.end_datetime.dateTimeChanged.connect(self._end_datetime_changed)
 
         # 初始化数据
         self.field_ls = field_ls
         self.field_default = field_default or self.field_ls[0]
         self._set_field()
 
-    def _slot_start_datetime_changed(self, q_datetime: QDateTime):
+    def _start_datetime_changed(self, q_datetime: QDateTime):
         # self.end_datetime.setMinimumDateTime(datetime)
         self.end_datetime.setMinimumDate(q_datetime.date())
 
-    def _slot_end_datetime_changed(self, q_datetime: QDateTime):
+    def _end_datetime_changed(self, q_datetime: QDateTime):
         # self.start_datetime.setMaximumDateTime(datetime)
         self.start_datetime.setMaximumDate(q_datetime.date())
 
@@ -189,6 +189,9 @@ class DatetimeSpan(QWidget):
             # 年月日时分秒
             start_q_datetime = QDateTime(start)
             end_q_datetime = QDateTime(end)
+
+            self._start_datetime_changed(start_q_datetime)
+            self._end_datetime_changed(end_q_datetime)
             self.set_datetime_range(start_q_datetime, end_q_datetime)
 
             # s = self.get_start_datetime()
@@ -231,6 +234,7 @@ class DatetimeSpan(QWidget):
         try:
             index_default = self.field_ls.index(option)
             self.combo_box.setCurrentIndex(index_default)
+            self._slot_combo_box_current_index_changed(index_default)
         except ValueError:
             raise ValueError("不存在此选项")
 
