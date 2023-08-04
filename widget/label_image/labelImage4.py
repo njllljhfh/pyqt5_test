@@ -1,13 +1,21 @@
 # 下面述代码执行后，图像没有自适应窗口大小, 如何修改，使其只在启动时，适配窗口大小
 import sys
+from typing import List
+
 from PyQt5.QtWidgets import QApplication, QGraphicsView, QGraphicsScene, QGraphicsRectItem, QWidget, QVBoxLayout, \
     QHBoxLayout, QPushButton, QGraphicsItem, QGraphicsPixmapItem
 from PyQt5.QtGui import QPixmap, QPen, QPainter, QMouseEvent, QColor, QResizeEvent, QKeyEvent
-from PyQt5.QtCore import Qt, QRectF, QPointF
+from PyQt5.QtCore import Qt, QRectF, QPointF, pyqtSignal
+
+SIDE_LENGTH = 50
+
+"""
+拖拽，移动事件在自定义的矩形类中实现
+"""
 
 
 class DraggableRectItem(QGraphicsRectItem):
-    half_side = 50
+    # signal_draw_points = pyqtSignal(int)
 
     def __init__(self, rect: QRectF):
         super().__init__(rect)
@@ -15,11 +23,12 @@ class DraggableRectItem(QGraphicsRectItem):
         # self.setFlags(QGraphicsRectItem.ItemIsMovable)
         self.active_vertex = None
 
+        self.points: List[QGraphicsRectItem] = []
+
     def mouseMoveEvent(self, event):
         if self.active_vertex:
             # pos = self.mapToScene(event.pos())
             pos = event.pos()
-            # pos = self.mapFromScene(event.pos())
             x, y = pos.x(), pos.y()
 
             rect = self.rect()
@@ -32,7 +41,11 @@ class DraggableRectItem(QGraphicsRectItem):
             self.setRect(rect)
         else:
             super().mouseMoveEvent(event)
-            print("整体移动矩形")
+
+        # try:
+        #     self.signal_draw_points.emit(1)
+        # except Exception as e:
+        #     print(f"error: {e}")
 
         print(f"【DraggableRectItem】 【mouseMoveEvent】 【active_vertex:{self.active_vertex}】")
 
@@ -52,7 +65,6 @@ class DraggableRectItem(QGraphicsRectItem):
         try:
             # pos = self.mapToScene(event.pos())
             pos = event.pos()
-            # pos = self.mapFromScene(event.pos())
             x, y = pos.x(), pos.y()
             print(f"【DraggableRectItem】 x,y = {x}, {y}")
 
@@ -63,19 +75,19 @@ class DraggableRectItem(QGraphicsRectItem):
             print(f"【DraggableRectItem】 bottom_right = {bottom_right}")
 
             # 左上角范围
-            lt_min_x = top_left.x() - self.half_side
-            lt_max_x = top_left.x() + self.half_side
+            lt_min_x = top_left.x() - SIDE_LENGTH / 2
+            lt_max_x = top_left.x() + SIDE_LENGTH / 2
             print(f"【DraggableRectItem】 lt_min_x,lt_max_x = {lt_min_x}, {lt_max_x}")
-            lt_min_y = top_left.y() - self.half_side
-            lt_max_y = top_left.y() + self.half_side
+            lt_min_y = top_left.y() - SIDE_LENGTH / 2
+            lt_max_y = top_left.y() + SIDE_LENGTH / 2
             print(f"【DraggableRectItem】 lt_min_y,lt_max_y = {lt_min_y}, {lt_max_y}")
 
             # 右下角范围
-            rb_min_x = bottom_right.x() - self.half_side
-            rb_max_x = bottom_right.x() + self.half_side
+            rb_min_x = bottom_right.x() - SIDE_LENGTH / 2
+            rb_max_x = bottom_right.x() + SIDE_LENGTH / 2
             print(f"【DraggableRectItem】 rb_min_x,rb_max_x = {rb_min_x}, {rb_max_x}")
-            rb_min_y = bottom_right.y() - self.half_side
-            rb_max_y = bottom_right.y() + self.half_side
+            rb_min_y = bottom_right.y() - SIDE_LENGTH / 2
+            rb_max_y = bottom_right.y() + SIDE_LENGTH / 2
             print(f"【DraggableRectItem】 rb_min_y,rb_max_y = {rb_min_y}, {rb_max_y}")
 
             # Allow adjusting the top-left and bottom-right corners
@@ -114,7 +126,7 @@ class ImageViewer(QGraphicsView):
         self.viewport().setCursor(Qt.ArrowCursor)
 
         self.image_item = None
-        self.current_item = None
+        self.current_item: DraggableRectItem = None
         self.start_x, self.start_y = None, None
         self.end_x, self.end_y = None, None
         self.pixmap = QPixmap()
@@ -122,7 +134,6 @@ class ImageViewer(QGraphicsView):
         self.zoom_in_factor = 1.2
         self.zoom_out_factor = 0.8
 
-        self.half_side = 50
         self._middle_button_pressed = False
         self._middle_button_last_pos = None
 
@@ -167,7 +178,7 @@ class ImageViewer(QGraphicsView):
                 top_item = self.get_topmost_rect_item(pos)
                 print(f"【ImageViewer】 【mousePressEvent top_item={top_item}")
                 if top_item is self.image_item:
-                    # pos = self.mapToScene(event.pos())
+                    pos = self.mapToScene(event.pos())
                     self.start_x, self.start_y = pos.x(), pos.y()
                     self.current_item = DraggableRectItem(QRectF(self.start_x, self.start_y, 0, 0))
                     brush = QColor(255, 0, 0, 30)  # 红色填充，透明度为100
@@ -175,6 +186,7 @@ class ImageViewer(QGraphicsView):
                     pen = QPen(Qt.red, 5)
                     self.current_item.setPen(pen)
                     self.scene().addItem(self.current_item)
+
                     print("【ImageViewer】 【mousePressEvent】 画新的框------------")
         elif event.button() == Qt.MiddleButton:
             self.viewport().setCursor(Qt.OpenHandCursor)
@@ -191,37 +203,70 @@ class ImageViewer(QGraphicsView):
         if self.image_item and self.image_item.contains(scene_pos):
             return self.image_item
 
+    def draw_rect_points(self, rect_item: DraggableRectItem):
+        tl_point = rect_item.rect().topLeft()
+        br_point = rect_item.rect().bottomRight()
+        if rect_item.points:
+            print(f"rect_item.points = {rect_item.points}")
+            self.scene().removeItem(rect_item.points[0])
+            self.scene().removeItem(rect_item.points[1])
+
+        tl_point_item = self.draw_point(tl_point)
+        br_point_item = self.draw_point(br_point)
+        print(f"tl_point={tl_point}, br_point={br_point}")
+        rect_item.points = [tl_point_item, br_point_item]
+
+    def draw_point(self, point: QPointF):
+        x = point.x() - SIDE_LENGTH / 2
+        y = point.y() - SIDE_LENGTH / 2
+
+        item = QGraphicsRectItem(QRectF(x, y, SIDE_LENGTH, SIDE_LENGTH))
+        brush = QColor(255, 0, 0, 255)  # 红色填充，透明度为100
+        item.setBrush(brush)
+        pen = QPen(Qt.red, 1)
+        item.setPen(pen)
+        self.scene().addItem(item)
+        return item
+
     def mouseMoveEvent(self, event):
-        super().mouseMoveEvent(event)
-        pos = self.mapToScene(event.pos())
-        if self.current_item:
-            self.end_x, self.end_y = pos.x(), pos.y()
-            self.current_item.setRect(
-                QRectF(self.start_x, self.start_y, self.end_x - self.start_x, self.end_y - self.start_y))
+        try:
+            super().mouseMoveEvent(event)
+            pos = self.mapToScene(event.pos())
+            if self.current_item:
 
-            if self.start_x < self.end_x:
-                x = self.start_x
+                self.end_x, self.end_y = pos.x(), pos.y()
+                self.current_item.setRect(
+                    QRectF(self.start_x, self.start_y, self.end_x - self.start_x, self.end_y - self.start_y))
+
+                self.draw_rect_points(self.current_item)
+
+                if self.start_x < self.end_x:
+                    x = self.start_x
+                else:
+                    x = self.end_x
+
+                if self.start_y < self.end_y:
+                    y = self.start_y
+                else:
+                    y = self.end_y
+                w = abs(self.start_x - self.end_x)
+                h = abs(self.start_y - self.end_y)
+                self.current_item.setRect(QRectF(x, y, w, h))
+
+                self.draw_rect_points(self.current_item)
+
+            if self._middle_button_pressed:
+                self.setDragMode(QGraphicsView.ScrollHandDrag)
+                delta = event.pos() - self._middle_button_last_pos
+                self._middle_button_last_pos = event.pos()
+                self.horizontalScrollBar().setValue(self.horizontalScrollBar().value() - delta.x())
+                self.verticalScrollBar().setValue(self.verticalScrollBar().value() - delta.y())
             else:
-                x = self.end_x
+                self.setDragMode(QGraphicsView.NoDrag)
 
-            if self.start_y < self.end_y:
-                y = self.start_y
-            else:
-                y = self.end_y
-            w = abs(self.start_x - self.end_x)
-            h = abs(self.start_y - self.end_y)
-            self.current_item.setRect(QRectF(x, y, w, h))
-
-        if self._middle_button_pressed:
-            self.setDragMode(QGraphicsView.ScrollHandDrag)
-            delta = event.pos() - self._middle_button_last_pos
-            self._middle_button_last_pos = event.pos()
-            self.horizontalScrollBar().setValue(self.horizontalScrollBar().value() - delta.x())
-            self.verticalScrollBar().setValue(self.verticalScrollBar().value() - delta.y())
-        else:
-            self.setDragMode(QGraphicsView.NoDrag)
-
-        self.repaint()
+            self.repaint()
+        except Exception as e:
+            print(f"error = {e}")
 
     def mouseReleaseEvent(self, event: QMouseEvent):
         super().mouseReleaseEvent(event)
@@ -262,12 +307,15 @@ class ImageViewer(QGraphicsView):
     def get_rect_points(self):
         """对角线上的两点坐标"""
         try:
-            if self.current_item:
-                # rect: QRectF = self.current_item.rect()
-                rect = self.current_item.mapRectToItem(self.image_item, self.current_item.rect())
+            # if self.current_item:
+            #     rect: QRectF = self.current_item.rect()
+            ls = []
+            for item in self.get_all_rect_items():
+                rect = item.mapRectToItem(self.image_item, item.rect())
                 lt = rect.topLeft()
                 rb = rect.bottomRight()
-                return [[lt.x(), lt.y()], [rb.x(), rb.y()]]
+                ls.append([[lt.x(), lt.y()], [rb.x(), rb.y()]])
+            return ls
         except Exception as e:
             print(f"error： {e}")
 
