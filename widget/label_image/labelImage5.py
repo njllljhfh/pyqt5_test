@@ -234,18 +234,21 @@ class ImageViewer(QGraphicsView):
         pos = self.mapToScene(event.pos())
         self._current_x = pos.x()
         self._current_y = pos.y()
+        x, y = pos.x(), pos.y()
 
         if self._show_cross:
             self._draw_cross(pos)
             self.cross_hidden(False)
 
         if self.current_item:
+            x_min = 0
+            y_min = 0
+            image_width = self.image_item.boundingRect().width()
+            image_height = self.image_item.boundingRect().height()
             if self.current_item.active_vertex and self._allow_adjust:
                 # pos = self.mapToScene(event.pos())
                 # pos = event.pos()
                 # pos = self.mapFromScene(event.pos())
-                x, y = pos.x(), pos.y()
-
                 rect = self.current_item.rect()
                 item_x_old = rect.x()
                 item_y_old = rect.y()
@@ -253,28 +256,43 @@ class ImageViewer(QGraphicsView):
                 item_h_old = rect.height()
 
                 if self.current_item.active_vertex == "top_left":
+                    x_max = image_width
+                    y_max = image_height
+                    x, y = self._get_valid_x_y(x, y, x_min, x_max, y_min, y_max)
+
                     w = (item_x_old + item_w_old) - x
                     h = (item_y_old + item_h_old) - y
                     self.current_item.setRect(QRectF(x, y, w, h))
                 elif self.current_item.active_vertex == "bottom_right":
+                    x_max = image_width
+                    y_max = image_height
+                    x, y = self._get_valid_x_y(x, y, x_min, x_max, y_min, y_max)
+
                     w = x - item_x_old
                     h = y - item_y_old
                     self.current_item.setRect(QRectF(item_x_old, item_y_old, w, h))
                 elif self.current_item.active_vertex == "move":
+                    x_max = image_width - item_w_old
+                    y_max = image_height - item_h_old
                     x_move = (x - self.start_x)
                     y_move = (y - self.start_y)
-                    x_new = item_x_old + x_move
-                    y_new = item_y_old + y_move
-                    self.current_item.setRect(QRectF(x_new, y_new, item_w_old, item_h_old))
-                    self.start_x = x
-                    self.start_y = y
+                    x = item_x_old + x_move
+                    y = item_y_old + y_move
+                    x, y = self._get_valid_x_y(x, y, x_min, x_max, y_min, y_max)
+
+                    self.current_item.setRect(QRectF(x, y, item_w_old, item_h_old))
+                    self.start_x = pos.x()
+                    self.start_y = pos.y()
                     self.cross_hidden(True)
                     # print("整体移动矩形")
             elif self.current_item.active_vertex is None:
+                x_max = image_width
+                y_max = image_height
                 drag_distance = (pos - QPointF(self.start_x, self.start_y)).manhattanLength()
                 if drag_distance > 3:
                     self.scene().addItem(self.current_item)
-                    self.end_x, self.end_y = pos.x(), pos.y()
+                    self.end_x, self.end_y = x, y
+                    self.end_x, self.end_y = self._get_valid_x_y(x, y, x_min, x_max, y_min, y_max)
                     self.current_item.setRect(
                         QRectF(self.start_x, self.start_y, self.end_x - self.start_x, self.end_y - self.start_y))
 
@@ -372,6 +390,18 @@ class ImageViewer(QGraphicsView):
         # print(f"self.get_all_rect_boxes()={self.get_all_rect_boxes()}")
         print(f"self.get_all_rect_points()={self.get_all_rect_points()}")
         # print("= " * 30)
+
+    @staticmethod
+    def _get_valid_x_y(x, y, x_min, x_max, y_min, y_max):
+        if x < x_min:
+            x = x_min
+        elif x > x_max:
+            x = x_max
+        if y < y_min:
+            y = y_min
+        elif y > y_max:
+            y = y_max
+        return x, y
 
     def draw_rect_points(self, rect_item: LabelRectItem):
         tl_point = rect_item.rect().topLeft()
