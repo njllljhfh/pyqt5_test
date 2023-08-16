@@ -117,6 +117,7 @@ class KlarfAnalysis(object):
         self.Rowct = int(Ys.max()) + 1  # Y 是 行（最下边是第0行）
         self.Colct = int(Xs.max()) + 1  # X 是 列（最左边是第0列）
         # xy_array = np.zeros([self.Rowct, self.Colct], dtype=np.int)  # 全0图像
+        print(f"self.Rowct={self.Rowct}, self.Colct={self.Colct}")
 
         scale = self.Colct / self.Rowct
         print(f"scale={scale}")
@@ -208,6 +209,7 @@ if __name__ == '__main__':
     # 此klarf中的die信息是以【左上角】为原点给的坐标数据
     # filePath = "./1683894545.227089_dbdfj_01_dbdfj_01.klarf"
     filePath = "./Test.klarf"
+    # filePath = "./Test_20230816.klarf"
     klarf = KlarfAnalysis(filePath, leftTop=True)
     # klarf = KlarfAnalysis(filePath, leftTop=False)
     klarf.analysis()

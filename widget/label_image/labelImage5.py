@@ -2,7 +2,7 @@ import sys
 from typing import List
 
 from PyQt5.QtWidgets import QApplication, QGraphicsView, QGraphicsScene, QGraphicsRectItem, QWidget, QVBoxLayout, \
-    QHBoxLayout, QPushButton, QGridLayout, QFrame, QGraphicsLineItem
+    QHBoxLayout, QPushButton, QGridLayout, QFrame, QGraphicsLineItem, QGraphicsItem
 from PyQt5.QtGui import QPixmap, QPen, QPainter, QMouseEvent, QColor, QKeyEvent
 from PyQt5.QtCore import Qt, QRectF, QPointF, QLineF
 
@@ -12,7 +12,7 @@ from PyQt5.QtCore import Qt, QRectF, QPointF, QLineF
 """
 
 
-class DraggableRectItem(QGraphicsRectItem):
+class LabelRectItem(QGraphicsRectItem):
 
     def __init__(self, rect: QRectF):
         super().__init__(rect)
@@ -35,6 +35,8 @@ class ImageViewer(QGraphicsView):
         self.current_item = None
         self.start_x, self.start_y = None, None
         self.end_x, self.end_y = None, None
+        self._current_x = 0
+        self._current_y = 0
         self.pixmap = QPixmap()
 
         self.zoom_in_factor = 1.2
@@ -48,11 +50,15 @@ class ImageViewer(QGraphicsView):
         self._fit_once = False  # 是否已经自适应窗口大小 1 次
         self._allow_adjust = True  # 是否允许调整矩形大小
 
-        pen = QPen(Qt.black, 6)
-        self.cross_item_h = QGraphicsLineItem()
-        self.cross_item_h.setPen(pen)
-        self.cross_item_v = QGraphicsLineItem()
-        self.cross_item_v.setPen(pen)
+        self._show_cross = True  # 是否开启鼠标十字
+        self._cross_line_width = 2
+        self._cross_line_length = 20
+        self._cross_color = QColor(0, 0, 0, 255)
+        self._cross_pen = QPen(self._cross_color, self._cross_line_width)
+        self._cross_item_h = QGraphicsLineItem()
+        self._cross_item_h.setPen(self._cross_pen)
+        self._cross_item_v = QGraphicsLineItem()
+        self._cross_item_v.setPen(self._cross_pen)
 
     def keyPressEvent(self, event: QKeyEvent):
         super().keyPressEvent(event)
@@ -62,9 +68,9 @@ class ImageViewer(QGraphicsView):
             for item in items:
                 if item.isSelected():
                     self._delete_rect(item)
-        # if event.key() == Qt.Key_F:
-        #     if self.image_item:
-        #         self.fitInView(self.image_item, Qt.KeepAspectRatio)
+        if event.key() == Qt.Key_F:
+            self.cross_hidden(True)
+            self.fit_in_view()
 
     def load_image(self, image_path):
         self.pixmap = QPixmap(image_path)
@@ -73,16 +79,33 @@ class ImageViewer(QGraphicsView):
             self.scene().clear()
             self.image_item = self.scene().addPixmap(self.pixmap)
             self.setSceneRect(QRectF(self.pixmap.rect()))
-            self.fitInView(self.image_item, Qt.KeepAspectRatio)
+            self.fit_in_view()
 
-            self.scene().addItem(self.cross_item_h)
-            self.scene().addItem(self.cross_item_v)
+            self.scene().addItem(self._cross_item_h)
+            self.scene().addItem(self._cross_item_v)
+
+    def fit_in_view(self):
+        if self.image_item:
+            h_scrollbar = self.horizontalScrollBar()
+            v_scrollbar = self.verticalScrollBar()
+            w = self.viewport().rect().width()
+            h = self.viewport().rect().height()
+            if h_scrollbar.isVisible():
+                h += h_scrollbar.height()
+            if v_scrollbar.isVisible():
+                w += v_scrollbar.width()
+            self.viewport().resize(w, h)
+            self.fitInView(self.image_item, Qt.KeepAspectRatio)
+            print(f"sceneBoundingRect={self.image_item.sceneBoundingRect()}")
+            print(f"viewport().rect()={self.viewport().rect()}")
+            print(f'h_scrollbar = {h_scrollbar.height()}')
+            print(f'v_scrollbar = {v_scrollbar.width()}')
 
     def resizeEvent(self, event):
         super().resizeEvent(event)
         # Ensure the image fits the view on startup
         if self.image_item and not self._fit_once:
-            self.fitInView(self.image_item, Qt.KeepAspectRatio)
+            self.fit_in_view()
             self._fit_once = True
 
     def mousePressEvent(self, event: QMouseEvent):
@@ -91,6 +114,8 @@ class ImageViewer(QGraphicsView):
         x = pos.x()
         y = pos.y()
         print(f"【ImageViewer】 【mousePressEvent】 x={x}, y={y}")
+        self._current_x = x
+        self._current_y = y
 
         try:
             if event.button() == Qt.LeftButton:
@@ -102,83 +127,117 @@ class ImageViewer(QGraphicsView):
                     if top_item is self.image_item:
                         # pos = self.mapToScene(event.pos())
                         self.start_x, self.start_y = pos.x(), pos.y()
-                        self.current_item = DraggableRectItem(QRectF(self.start_x, self.start_y, 0, 0))
+                        self.current_item = LabelRectItem(QRectF(self.start_x, self.start_y, 0, 0))
                         brush = QColor(255, 0, 0, 30)  # 红色填充，透明度为100
                         self.current_item.setBrush(brush)
                         pen = QPen(Qt.red, 5)
                         self.current_item.setPen(pen)
-                        self.scene().addItem(self.current_item)
+                        # self.scene().addItem(self.current_item)
                         print("【ImageViewer】 【mousePressEvent】 画新的框------------")
-                    elif isinstance(top_item, DraggableRectItem):
+                    elif isinstance(top_item, LabelRectItem):
                         # pos = self.mapToScene(event.pos())
                         # pos = event.pos()
                         # pos = self.mapFromScene(event.pos())
                         x, y = pos.x(), pos.y()
-                        print(f"【DraggableRectItem】 x,y = {x}, {y}")
+                        print(f"【LabelRectItem】 x,y = {x}, {y}")
 
                         rect = top_item.rect()
                         top_left = rect.topLeft()
                         bottom_right = rect.bottomRight()
-                        print(f"【DraggableRectItem】 top_left = {top_left}")
-                        print(f"【DraggableRectItem】 bottom_right = {bottom_right}")
+                        print(f"【LabelRectItem】 top_left = {top_left}")
+                        print(f"【LabelRectItem】 bottom_right = {bottom_right}")
 
                         # 左上角范围
                         lt_min_x = top_left.x() - self.side_length / 2
                         lt_max_x = top_left.x() + self.side_length / 2
-                        print(f"【DraggableRectItem】 lt_min_x,lt_max_x = {lt_min_x}, {lt_max_x}")
+                        print(f"【LabelRectItem】 lt_min_x,lt_max_x = {lt_min_x}, {lt_max_x}")
                         lt_min_y = top_left.y() - self.side_length / 2
                         lt_max_y = top_left.y() + self.side_length / 2
-                        print(f"【DraggableRectItem】 lt_min_y,lt_max_y = {lt_min_y}, {lt_max_y}")
+                        print(f"【LabelRectItem】 lt_min_y,lt_max_y = {lt_min_y}, {lt_max_y}")
 
                         # 右下角范围
                         rb_min_x = bottom_right.x() - self.side_length / 2
                         rb_max_x = bottom_right.x() + self.side_length / 2
-                        print(f"【DraggableRectItem】 rb_min_x,rb_max_x = {rb_min_x}, {rb_max_x}")
+                        print(f"【LabelRectItem】 rb_min_x,rb_max_x = {rb_min_x}, {rb_max_x}")
                         rb_min_y = bottom_right.y() - self.side_length / 2
                         rb_max_y = bottom_right.y() + self.side_length / 2
-                        print(f"【DraggableRectItem】 rb_min_y,rb_max_y = {rb_min_y}, {rb_max_y}")
+                        print(f"【LabelRectItem】 rb_min_y,rb_max_y = {rb_min_y}, {rb_max_y}")
 
                         # Allow adjusting the top-left and bottom-right corners
                         if (lt_min_x <= x <= lt_max_x) and (lt_min_y <= y <= lt_max_y):
                             # 左上角
                             top_item.active_vertex = "top_left"
-                            print("【DraggableRectItem】 top_left")
+                            print("【LabelRectItem】 top_left")
                         elif (rb_min_x <= x <= rb_max_x) and (rb_min_y <= y <= rb_max_y):
                             top_item.active_vertex = "bottom_right"
-                            print("【DraggableRectItem】 bottom_right")
+                            print("【LabelRectItem】 bottom_right")
                         else:
-                            print("【DraggableRectItem】 move")
+                            print("【LabelRectItem】 move")
                             self.start_x, self.start_y = pos.x(), pos.y()
                             top_item.active_vertex = 'move'
-                        print(f"【mousePressEvent】 【DraggableRectItem】 【active_vertex:{top_item.active_vertex}】")
+                            self.cross_hidden(True)
+                        print(f"【mousePressEvent】 【LabelRectItem】 【active_vertex:{top_item.active_vertex}】")
                         self.current_item = top_item
             elif event.button() == Qt.MiddleButton:
                 self.viewport().setCursor(Qt.OpenHandCursor)
                 self._middle_button_last_pos = event.pos()
                 self._middle_button_pressed = True
+                self.cross_hidden(True)
         except Exception as e:
             print(f"error: {e}")
 
     def get_topmost_item(self, scene_pos):
         all_items = self.scene().items()
         for item in all_items:
-            if isinstance(item, DraggableRectItem):
+            if isinstance(item, LabelRectItem):
                 if item.contains(item.mapFromScene(scene_pos)):  # 判断item是否包含给定的点
                     return item
 
         if self.image_item and self.image_item.contains(scene_pos):
             return self.image_item
 
+    def _draw_cross(self, pos):
+        x = pos.x()
+        y = pos.y()
+        scale_x, scale_y = self.current_scale()
+        scale = min(scale_x, scale_y)
+
+        length = self._cross_line_length * (1.0 / scale)
+        line_width = self._cross_line_width * (1.0 / scale)
+        self._cross_pen = QPen(self._cross_color, line_width)
+        self._cross_item_h.setPen(self._cross_pen)
+        self._cross_item_v.setPen(self._cross_pen)
+        try:
+            self._cross_item_v.setLine(QLineF(QPointF(x, y - length), QPointF(x, y + length)))
+            self._cross_item_h.setLine(QLineF(QPointF(x - length, y), QPointF(x + length, y)))
+        except Exception as e:
+            print(f"error: {e}")
+
+    def cross_hidden(self, hidden: bool):
+        if hidden:
+            self._cross_item_h.hide()
+            self._cross_item_v.hide()
+        else:
+            self._cross_item_h.show()
+            self._cross_item_v.show()
+
+    def current_scale(self):
+        # 获取视图的变换矩阵
+        matrix = self.transform()
+        # 从矩阵中提取缩放比例
+        scale_x = matrix.m11()
+        scale_y = matrix.m22()
+        return scale_x, scale_y
+
     def mouseMoveEvent(self, event):
         super().mouseMoveEvent(event)
         pos = self.mapToScene(event.pos())
-        x = pos.x()
-        y = pos.y()
-        try:
-            self.cross_item_v.setLine(QLineF(QPointF(x, y - 100), QPointF(x, y + 100)))
-            self.cross_item_h.setLine(QLineF(QPointF(x - 100, y), QPointF(x + 100, y)))
-        except Exception as e:
-            print(f"error: {e}")
+        self._current_x = pos.x()
+        self._current_y = pos.y()
+
+        if self._show_cross:
+            self._draw_cross(pos)
+            self.cross_hidden(False)
 
         if self.current_item:
             if self.current_item.active_vertex and self._allow_adjust:
@@ -209,43 +268,46 @@ class ImageViewer(QGraphicsView):
                     self.current_item.setRect(QRectF(x_new, y_new, item_w_old, item_h_old))
                     self.start_x = x
                     self.start_y = y
-                    print("整体移动矩形")
+                    self.cross_hidden(True)
+                    # print("整体移动矩形")
             elif self.current_item.active_vertex is None:
+                drag_distance = (pos - QPointF(self.start_x, self.start_y)).manhattanLength()
+                if drag_distance > 3:
+                    self.scene().addItem(self.current_item)
+                    self.end_x, self.end_y = pos.x(), pos.y()
+                    self.current_item.setRect(
+                        QRectF(self.start_x, self.start_y, self.end_x - self.start_x, self.end_y - self.start_y))
 
-                self.end_x, self.end_y = pos.x(), pos.y()
-                self.current_item.setRect(
-                    QRectF(self.start_x, self.start_y, self.end_x - self.start_x, self.end_y - self.start_y))
+                    # 将矩形转换为从左上角，到右下角绘制
+                    rect = self.current_item.rect()
+                    tl_x = rect.x()
+                    tl_y = rect.y()
+                    br_x = rect.x() + rect.width()
+                    br_y = rect.y() + rect.height()
+                    if tl_x < br_x:
+                        x = tl_x
+                    else:
+                        x = br_x
+                    if tl_y < br_y:
+                        y = tl_y
+                    else:
+                        y = br_y
+                    w = abs(rect.width())
+                    h = abs(rect.height())
+                    self.current_item.setRect(QRectF(x, y, w, h))
 
-                # 将矩形转换为从左上角，到右下角绘制
-                rect = self.current_item.rect()
-                tl_x = rect.x()
-                tl_y = rect.y()
-                br_x = rect.x() + rect.width()
-                br_y = rect.y() + rect.height()
-                if tl_x < br_x:
-                    x = tl_x
-                else:
-                    x = br_x
-                if tl_y < br_y:
-                    y = tl_y
-                else:
-                    y = br_y
-                w = abs(rect.width())
-                h = abs(rect.height())
-                self.current_item.setRect(QRectF(x, y, w, h))
-
-                # if self.start_x < self.end_x:
-                #     x = self.start_x
-                # else:
-                #     x = self.end_x
-                #
-                # if self.start_y < self.end_y:
-                #     y = self.start_y
-                # else:
-                #     y = self.end_y
-                # w = abs(self.start_x - self.end_x)
-                # h = abs(self.start_y - self.end_y)
-                # self.current_item.setRect(QRectF(x, y, w, h))
+                    # if self.start_x < self.end_x:
+                    #     x = self.start_x
+                    # else:
+                    #     x = self.end_x
+                    #
+                    # if self.start_y < self.end_y:
+                    #     y = self.start_y
+                    # else:
+                    #     y = self.end_y
+                    # w = abs(self.start_x - self.end_x)
+                    # h = abs(self.start_y - self.end_y)
+                    # self.current_item.setRect(QRectF(x, y, w, h))
 
             self.draw_rect_points(self.current_item)
 
@@ -255,6 +317,7 @@ class ImageViewer(QGraphicsView):
             self._middle_button_last_pos = event.pos()
             self.horizontalScrollBar().setValue(self.horizontalScrollBar().value() - delta.x())
             self.verticalScrollBar().setValue(self.verticalScrollBar().value() - delta.y())
+            self.cross_hidden(True)
         else:
             self.setDragMode(QGraphicsView.NoDrag)
 
@@ -262,13 +325,19 @@ class ImageViewer(QGraphicsView):
 
     def mouseReleaseEvent(self, event: QMouseEvent):
         super().mouseReleaseEvent(event)
+        pos = self.mapToScene(event.pos())
+        self._current_x = pos.x()
+        self._current_y = pos.y()
+
         self.viewport().setCursor(Qt.ArrowCursor)
         self.setDragMode(QGraphicsView.NoDrag)
         if event.button() == Qt.LeftButton:
             self.current_item = None
-            self.start_x, self.start_y, self.end_x, self.end_y = None, None, None, None
+            # self.start_x, self.start_y, self.end_x, self.end_y = None, None, None, None
         elif event.button() == Qt.MiddleButton:
             self._middle_button_pressed = False
+        if self._show_cross:
+            self.cross_hidden(False)
 
     # def mouseDoubleClickEvent(self, event):
     #     super().mouseDoubleClickEvent(event)
@@ -276,13 +345,14 @@ class ImageViewer(QGraphicsView):
     #           f"--------------- {self.verticalScrollBar().value()}")
     #     pos = self.mapToScene(event.pos())
     #     if event.button() == Qt.LeftButton:
-    #         top_item = self.get_topmost_rect_item(pos)
-    #         if isinstance(top_item, DraggableRectItem):
+    #         top_item = self.get_topmost_item(pos)
+    #         if isinstance(top_item, LabelRectItem):
     #             if top_item.isSelected():
     #                 self._delete_rect(top_item)
 
     def wheelEvent(self, event):
         super().wheelEvent(event)
+        self.setFocus()
 
         # 滚轮缩放
         if event.angleDelta().y() > 0:
@@ -290,12 +360,20 @@ class ImageViewer(QGraphicsView):
         else:
             self.scale(self.zoom_out_factor, self.zoom_out_factor)
 
-        print(f"self.pixmap.width()={self.pixmap.width()}, self.pixmap.height()={self.pixmap.height()}")
-        print(f"self.get_all_rect_boxes()={self.get_all_rect_boxes()}")
-        print(f"self.get_all_rect_points()={self.get_all_rect_points()}")
-        print("= " * 30)
+        pos = self.mapToScene(event.pos())
+        self._current_x = pos.x()
+        self._current_y = pos.y()
+        if self._show_cross:
+            self._draw_cross(pos)
 
-    def draw_rect_points(self, rect_item: DraggableRectItem):
+        print(f"self.pixmap.width()={self.pixmap.width()}, self.pixmap.height()={self.pixmap.height()}")
+        print(f"viewport().rect()={self.viewport().rect()}")
+        # print(f"sceneBoundingRect={self.image_item.sceneBoundingRect()}")
+        # print(f"self.get_all_rect_boxes()={self.get_all_rect_boxes()}")
+        print(f"self.get_all_rect_points()={self.get_all_rect_points()}")
+        # print("= " * 30)
+
+    def draw_rect_points(self, rect_item: LabelRectItem):
         tl_point = rect_item.rect().topLeft()
         br_point = rect_item.rect().bottomRight()
         if rect_item.points:
@@ -348,7 +426,7 @@ class ImageViewer(QGraphicsView):
     def get_all_rect_items(self):
         # 获取场景中的全部矩形项
         all_items = self.scene().items()
-        rect_items = [item for item in all_items if isinstance(item, DraggableRectItem)]
+        rect_items = [item for item in all_items if isinstance(item, LabelRectItem)]
         return rect_items
 
     def clear_all_rect(self):
@@ -444,20 +522,20 @@ class MyFourWidget(QWidget):
 if __name__ == "__main__":
     app = QApplication(sys.argv)
 
-    image_path_el = "./images/EL_TP3"
-    image_path_vl = "./images/VI_TP3"
+    image_path_el = "../../images/EL_TP3"
+    image_path_vl = "../../images/VI_TP3"
 
-    # widget = MyWidget()
-    # widget.resize(1000, 600)
-    # widget.ui.viewer.load_image(image_path_el)
+    widget = MyWidget()
+    widget.resize(1000, 600)
+    widget.ui.viewer.load_image(image_path_el)
 
-    widget = MyFourWidget()
-    widget.resize(1900, 1000)
-    widget.load_image(image_path_el)
-    # widget.ui.label_component_1.viewer.load_image(image_path_el)
-    # widget.ui.label_component_2.viewer.load_image(image_path_vl)
-    # widget.ui.label_component_3.viewer.load_image(image_path_vl)
-    # widget.ui.label_component_4.viewer.load_image(image_path_el)
+    # widget = MyFourWidget()
+    # widget.resize(1900, 1000)
+    # widget.load_image(image_path_el)
+    # # widget.ui.label_component_1.viewer.load_image(image_path_el)
+    # # widget.ui.label_component_2.viewer.load_image(image_path_vl)
+    # # widget.ui.label_component_3.viewer.load_image(image_path_vl)
+    # # widget.ui.label_component_4.viewer.load_image(image_path_el)
 
     widget.show()
 
