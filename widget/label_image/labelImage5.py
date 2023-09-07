@@ -27,6 +27,8 @@ class ImageViewer(QGraphicsView):
         super().__init__(parent)
         self.setScene(QGraphicsScene(self))
         self.setRenderHint(QPainter.Antialiasing)
+        self.setTransformationAnchor(QGraphicsView.AnchorUnderMouse)  # 鼠标位置缩放
+        # self.setResizeAnchor(QGraphicsView.AnchorUnderMouse)
         self.setViewportUpdateMode(QGraphicsView.FullViewportUpdate)
         self.setMouseTracking(True)  # 开启鼠标移动事件追踪
         self.viewport().setCursor(Qt.ArrowCursor)
@@ -369,7 +371,7 @@ class ImageViewer(QGraphicsView):
     #                 self._delete_rect(top_item)
 
     def wheelEvent(self, event):
-        super().wheelEvent(event)
+        # super().wheelEvent(event)
         self.setFocus()
 
         # 滚轮缩放

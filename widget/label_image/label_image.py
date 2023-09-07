@@ -423,6 +423,7 @@ class UploadBtn(QPushButton):
         image_formats = "Image Files (*.png *.jpg *.bmp *.gif);;All Files (*)"
         file_path_ls, _ = QFileDialog.getOpenFileNames(self, "上传图像文件", "", image_formats, options=options)
         file_path_ls.sort()
+        print(file_path_ls)
 
         if file_path_ls:
             print("已选择的文件:")

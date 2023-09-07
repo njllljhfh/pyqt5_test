@@ -1,9 +1,61 @@
 # -*- coding:utf-8 -*-
 import json
+import sys
 
 import cv2
 import math
 import numpy as np
+from PyQt5.QtCore import Qt
+from PyQt5.QtGui import QPixmap, QPainter, QKeyEvent, QResizeEvent
+from PyQt5.QtWidgets import QGraphicsView, QGraphicsScene, QApplication
+
+
+class ImageViewer(QGraphicsView):
+    def __init__(self):
+        super().__init__()
+
+        self.setScene(QGraphicsScene(self))
+
+        self.setRenderHint(QPainter.Antialiasing)
+        self.setDragMode(QGraphicsView.ScrollHandDrag)
+        self.setViewportUpdateMode(QGraphicsView.FullViewportUpdate)
+
+        self.zoom_in_factor = 1.2
+        self.zoom_out_factor = 0.8
+
+        self._fit_once = False
+
+    def show_image(self, img_bytes):
+        pixmap = QPixmap()
+        pixmap.loadFromData(img_bytes)
+
+        self.scene().clear()
+        image_item = self.scene().addPixmap(pixmap)
+        self.fitInView(self.scene().sceneRect(), Qt.KeepAspectRatio)  # 1 表示保持原始图像大小
+        # self.fitInView(image_item, Qt.KeepAspectRatio)
+
+    def wheelEvent(self, event):
+        super().wheelEvent(event)
+        self.setFocus()
+
+        if event.angleDelta().y() > 0:
+            self.scale(self.zoom_in_factor, self.zoom_in_factor)
+        else:
+            self.scale(self.zoom_out_factor, self.zoom_out_factor)
+
+    def fit_in_view(self):
+        self.fitInView(self.scene().sceneRect(), Qt.KeepAspectRatio)
+
+    def keyPressEvent(self, event: QKeyEvent):
+        super().keyPressEvent(event)
+        if event.key() == Qt.Key_F:
+            self.fit_in_view()
+
+    def resizeEvent(self, event: QResizeEvent):
+        super().resizeEvent(event)
+        if not self._fit_once:
+            self.fit_in_view()
+            self._fit_once = True
 
 
 class KlarfAnalysis(object):
@@ -114,6 +166,10 @@ class KlarfAnalysis(object):
         all_die_xy_np = np.reshape(all_die_xy, [-1, 2])
 
         Xs, Ys = all_die_xy_np[:, 0], all_die_xy_np[:, 1]
+        print(f"x_min = {Xs.min()}")
+        print(f"x_max = {Xs.max()}")
+        print(f"y_min = {Ys.min()}")
+        print(f"y_max = {Ys.max()}")
         self.Rowct = int(Ys.max()) + 1  # Y 是 行（最下边是第0行）
         self.Colct = int(Xs.max()) + 1  # X 是 列（最左边是第0列）
         # xy_array = np.zeros([self.Rowct, self.Colct], dtype=np.int)  # 全0图像
@@ -167,9 +223,16 @@ class KlarfAnalysis(object):
         with open("./waferMap.jpg", "wb") as f:
             f.write(img_bytes)
 
-        cv2.imshow('img', xy_array)
-        cv2.waitKey(0)
-        cv2.destroyAllWindows()
+        # 显示图像
+        # cv2.imshow('img', xy_array)
+        # cv2.waitKey(0)
+        # cv2.destroyAllWindows()
+        app = QApplication(sys.argv)
+        image_viewer = ImageViewer()
+        image_viewer.resize(900, 900)
+        image_viewer.show()
+        image_viewer.show_image(img_bytes)
+        sys.exit(app.exec_())
 
     def __analysis_class_map(self, class_ls: list):
         """
@@ -208,10 +271,10 @@ class KlarfAnalysis(object):
 if __name__ == '__main__':
     # 此klarf中的die信息是以【左上角】为原点给的坐标数据
     # filePath = "./1683894545.227089_dbdfj_01_dbdfj_01.klarf"
-    filePath = "./Test.klarf"
-    # filePath = "./Test_20230816.klarf"
-    klarf = KlarfAnalysis(filePath, leftTop=True)
-    # klarf = KlarfAnalysis(filePath, leftTop=False)
+    # filePath = "./Test.klarf"
+    filePath = "./Test_20230816.klarf"
+    # klarf = KlarfAnalysis(filePath, leftTop=True)
+    klarf = KlarfAnalysis(filePath, leftTop=False)
     klarf.analysis()
     print(" - - - - - - - - - - - -- - ")
 

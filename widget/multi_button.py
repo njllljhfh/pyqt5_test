@@ -1,6 +1,5 @@
 # -*- coding:utf-8 -*-
 # __author__ = "Dragon"
-from functools import partial
 from typing import List
 
 from PyQt5.QtWidgets import QGridLayout, QFrame, QPushButton
@@ -18,7 +17,7 @@ class MultiButton(QFrame):
         self._g_layout = QGridLayout(self)
 
         self.buttons = []
-        self.column_count = None
+        self.column_count = None  # 最多显示几列, None表示有几个按钮就显示几列
 
     def button(self, p_int) -> QPushButton:
         return self.buttons[p_int]
@@ -41,29 +40,50 @@ class MultiButton(QFrame):
         self.buttons.clear()
         for i, name in enumerate(name_ls):
             btn = QPushButton(self)
-            btn.setObjectName(f'button_{i}')
+            btn.setObjectName(f'multi_button_{i}')
             btn.setText(name)
             self.buttons.append(btn)
             self._g_layout.addWidget(btn, int(i / self.column_count), i % self.column_count)
 
 
-def x(btn):
-    print(f"btn------{btn.text()}")
-
-
 if __name__ == '__main__':
     import sys
+    from functools import partial
     from PyQt5.QtWidgets import QApplication
+
+    qss = """
+    QPushButton {
+        border: none;
+        border-radius: 6px;
+        padding:10px;
+        min-width: 80px;
+    }
+    #multi_button_0, #multi_button_1, #multi_button_2, #multi_button_3{
+        color: rgb(0, 0, 0);
+        background-color: rgb(74, 138, 244);
+    }
+    #multi_button_4{
+        color: rgb(0, 0, 0);
+        background-color: rgb(217, 0, 27);
+    }
+    """
+
+
+    def x(btn):
+        print(f"btn------{btn.text()}")
+
 
     app = QApplication(sys.argv)
     my_widget = MultiButton()
-    name_ls_ = ["总计", "OK", "NG"]
-    my_widget.set_names(name_ls_, column_count=2)
-    name_ls_ = ["1", "2", "3", "4"]
-    my_widget.set_names(name_ls_, column_count=1)
+    my_widget.setStyleSheet(qss)
+    # name_ls_ = ["1", "2", "3"]
+    # my_widget.set_names(name_ls_, column_count=2)
+    name_ls_ = ["A", "B", "C", "D", "E"]
+    my_widget.set_names(name_ls_)
+    # my_widget.set_names(name_ls_, column_count=2)
 
-    for i, btn in enumerate(my_widget.buttons):
-        btn.clicked.connect(partial(x, btn))
+    for i, button in enumerate(my_widget.buttons):
+        button.clicked.connect(partial(x, button))
 
     my_widget.layout().setContentsMargins(2, 2, 2, 2)
     my_widget.layout().setSpacing(5)
