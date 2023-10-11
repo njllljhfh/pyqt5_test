@@ -70,49 +70,63 @@ class MetaAnalysis:
     def _agg_data(self):
         row_data = []
         data = self.DieMap
-        xxx = 0
         for item in data:
-            start_space_count = 0
-            end_space_count = 0
-
-            print(f"xxx={xxx}")
-            for jtem in item[::-1]:
-                # if jtem == "_":
-                #     end_space_count += 1
-                # elif jtem == "001":
-                #     break
-
-                if jtem == "_":
-                    end_space_count += 1
-                else:
+            for i in range(len(item)):
+                left = i
+                right = len(item) - 1 - i
+                if item[left] != '_' or item[right] != '_':
                     break
-
-            for ktem in item:
-                # if ktem == "_":
-                #     start_space_count += 1
-                # elif ktem == "001":
-                #     break
-
-                if ktem == "_":
-                    start_space_count += 1
-                else:
-                    break
-
-            if start_space_count == end_space_count:
-                space_count = start_space_count
-            elif start_space_count > end_space_count:
-                space_count = end_space_count
-            else:
-                space_count = start_space_count
-
-            for i in range(space_count):
-                del item[0]
-                item.pop()
-
-            row_data.append(item)
-            xxx += 1
-
+            row_data.append(item[left:right + 1])
+            # print(' '.join(row_data[-1]))
         self.DieMap = row_data
+        pass
+
+    # def _agg_data(self):
+    #     row_data = []
+    #     data = self.DieMap
+    #     xxx = 0
+    #     for item in data:
+    #         print(f"xxx = {xxx}")
+    #         start_space_count = 0
+    #         end_space_count = 0
+    #
+    #         for jtem in item[::-1]:
+    #             # if jtem == "_":
+    #             #     end_space_count += 1
+    #             # elif jtem == "001":
+    #             #     break
+    #
+    #             if jtem == "_":
+    #                 end_space_count += 1
+    #             else:
+    #                 break
+    #
+    #         for ktem in item:
+    #             # if ktem == "_":
+    #             #     start_space_count += 1
+    #             # elif ktem == "001":
+    #             #     break
+    #
+    #             if ktem == "_":
+    #                 start_space_count += 1
+    #             else:
+    #                 break
+    #
+    #         if start_space_count == end_space_count:
+    #             space_count = start_space_count
+    #         elif start_space_count > end_space_count:
+    #             space_count = end_space_count
+    #         else:
+    #             space_count = start_space_count
+    #
+    #         for i in range(space_count):
+    #             del item[0]
+    #             item.pop()
+    #
+    #         row_data.append(item)
+    #         xxx += 1
+    #
+    #     self.DieMap = row_data
 
     @property
     def file_url(self):
@@ -190,11 +204,18 @@ class KlarfAnalysis(MetaAnalysis):
             if line.find("DefectRecordSpec") != -1:
                 columnheader = line[20:-1].split(" ")  # 表头字段
                 columnheader.insert(0, "IMAGENAME")
-                defectdatastartline = count - 1  # 缺陷数据开始位置-行数
+                # defectdatastartline = count - 1  # 缺陷数据开始位置-行数
+                defectdatastartline = count + 2  # 缺陷数据开始位置-行数
+
+            # if line.find("SummarySpec") != -1:
+            #     defectdataendline = count - 1  # 缺陷数据结束位置-行数
+            #     line = line.replace(";", "")
 
             if line.find("SummarySpec") != -1:
-                defectdataendline = count - 1  # 缺陷数据结束位置-行数
                 line = line.replace(";", "")
+
+            if line.find("DefectList") != -1:
+                defectdataendline = count + 1  # 缺陷数据结束位置-行数
 
             if line.find("SummaryList") != -1:
                 summaryliststartline = count + 1  # 统计数据开始位置-行数
@@ -217,7 +238,7 @@ class KlarfAnalysis(MetaAnalysis):
             self.SetupID = self.SetupID + '-' + self.DeviceID
 
         defectlist = lines[defectdatastartline:defectdataendline + 1]  # 所有的缺陷数据
-        defectlist.pop(1)  # 表头与第一个文件名错位 需要单独处理
+        # defectlist.pop(1)  # 表头与第一个文件名错位 需要单独处理
         defectlist[-1] = defectlist[-1].replace(';', '')  # 最后一行有;符号需要删除
         summarylist = [i.replace(';', '').split(" ") for i in
                        lines[summaryliststartline:summaryliststartline + testplans]]  # 统计数据每个testplans都是一行
@@ -258,8 +279,9 @@ class KlarfAnalysis(MetaAnalysis):
         将缺陷列表数据转化为dataframe
         """
         values = []
+        current_die_defect_num = 0
         for index, row in enumerate(defectlist):
-            if len(defectlist[index].split(" ")) > 3:
+            if len(defectlist[index].split(" ")) > 3 and current_die_defect_num == 0:
                 if defectlist[index].split(" ")[0] == "":
                     temp_defect_start = 1
                 else:
@@ -268,11 +290,13 @@ class KlarfAnalysis(MetaAnalysis):
                 values.extend(row.split(" ")[temp_defect_start:(
                         noofdefectcolumn + temp_defect_start - 1)])
                 defectlocation_np.append(values)
+                current_die_defect_num += 1
                 values = []
             else:
                 if len(defectlist[index].split(" ")) == 2:  # 图片文件名TiffFileName
                     TiffFileName = defectlist[index].split(" ")[-1].replace(";", "")
                     values.append(TiffFileName)
+                    current_die_defect_num = 0
                 else:  # DefectList
                     pass
 
@@ -294,6 +318,7 @@ class KlarfAnalysis(MetaAnalysis):
         self.Rowct = int(Ys.max()) + 1  # Y 是 行（最下边是第0行）
         self.Colct = int(Xs.max()) + 1  # X 是 列（最左边是第0列）
         xy_array = np.zeros([self.Rowct, self.Colct], dtype=np.int)  # 全0图像
+        xy_array = np.full_like(xy_array, -6)
 
         # (0，0) 为图像的左下角，所以Y方向的坐标要做上下翻转
         for die_xy in all_die_xy_np:
@@ -309,15 +334,15 @@ class KlarfAnalysis(MetaAnalysis):
         die_map_list = xy_array.tolist()
         for i in die_map_list:  # 将数据中的0变为_,数据中的10变为001，数据中的其他如90变为三位的090
             for j in range(len(i)):
-                if i[j] == 0:
+                # if i[j] == 0:
+                if i[j] == -6:
                     i[j] = "_"
-                # elif i[j] == 10:
                 elif i[j] == -666:
-                    # i[j] = "001"
                     i[j] = OK_PLACEHOLDER
                 else:
                     d = str(i[j])
                     i[j] = "0" * (3 - len(d)) + d
+                    # i[j] = _dec_to_hex(d)
         self.DieMap = die_map_list
         self.Origin_DieMap = copy.deepcopy(die_map_list)
         self.defectLocation = json.loads(
@@ -345,8 +370,33 @@ class KlarfAnalysis(MetaAnalysis):
             self.class_data[class_name] = class_id
 
 
+def dec_to_hex(num_str: str):
+    """
+    十进制转十六进制
+    :param num_str:
+    :return:
+    """
+    if num_str.count('0') == len(num_str):
+        num = 0
+    else:
+        num = int(num_str.lstrip('0'))
+    hex_str = hex(num)[2:]
+
+    if len(hex_str) <= 3:
+        hex_str = f'{hex_str:0>3}'
+
+    return hex_str
+
+
 if __name__ == '__main__':
-    # filePath = "./Test_20230816.klarf"
-    filePath = "./5465_01.klarf"
+    filePath = "results.kla"
     klarf = KlarfAnalysis(filePath)
-    print(f"klarf = {klarf.props()}")
+    # print(f"klarf = {klarf.props()}")
+
+    # print(dec_to_hex('0'))
+    # print(dec_to_hex('1'))
+    # print(dec_to_hex('2'))
+    # print(dec_to_hex('15'))
+    # print(dec_to_hex('999'))
+
+

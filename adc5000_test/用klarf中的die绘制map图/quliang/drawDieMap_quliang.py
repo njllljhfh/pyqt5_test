@@ -117,11 +117,18 @@ class KlarfAnalysis(object):
             if line.find("DefectRecordSpec") != -1:
                 columnheader = line[20:-1].split(" ")  # 表头字段
                 columnheader.insert(0, "IMAGENAME")
-                defectdatastartline = count - 1  # 缺陷数据开始位置-行数
+                # defectdatastartline = count - 1  # 缺陷数据开始位置-行数
+                defectdatastartline = count + 2  # 缺陷数据开始位置-行数
+
+            # if line.find("SummarySpec") != -1:
+            #     defectdataendline = count - 1  # 缺陷数据结束位置-行数
+            #     line = line.replace(";", "")
 
             if line.find("SummarySpec") != -1:
-                defectdataendline = count - 1  # 缺陷数据结束位置-行数
                 line = line.replace(";", "")
+
+            if line.find("DefectList") != -1:
+                defectdataendline = count + 1  # 缺陷数据结束位置-行数
 
             if line.find("SummaryList") != -1:
                 summaryliststartline = count + 1  # 统计数据开始位置-行数
@@ -141,7 +148,7 @@ class KlarfAnalysis(object):
             self.SetupID = self.SetupID + '-' + self.DeviceID
 
         defectlist = lines[defectdatastartline:defectdataendline + 1]  # 所有的缺陷数据
-        defectlist.pop(1)  # 表头与第一个文件名错位 需要单独处理
+        # defectlist.pop(1)  # 表头与第一个文件名错位 需要单独处理
         defectlist[-1] = defectlist[-1].replace(';', '')  # 最后一行有;符号需要删除
         summarylist = [i.replace(';', '').split(" ") for i in
                        lines[summaryliststartline:summaryliststartline + testplans]]  # 统计数据每个testplans都是一行
@@ -270,10 +277,7 @@ class KlarfAnalysis(object):
 
 if __name__ == '__main__':
     # 此klarf中的die信息是以【左上角】为原点给的坐标数据
-    # filePath = "./1683894545.227089_dbdfj_01_dbdfj_01.klarf"
-    # filePath = "./Test.klarf"
-    # filePath = "./Test_20230816.klarf"
-    filePath = "./5465_01.klarf"
+    filePath = "results.kla"
     # klarf = KlarfAnalysis(filePath, leftTop=True)
     klarf = KlarfAnalysis(filePath, leftTop=False)
     klarf.analysis()
