@@ -11,7 +11,7 @@ class LoadingWidget(QWidget):
 
     def __init__(self, icon, parent=None):
         """
-        :param icon: icon 路径
+        :param icon: icons 路径
         """
         super().__init__(parent=parent)
         # self.setAttribute(Qt.WA_TranslucentBackground)  # 设置为透明

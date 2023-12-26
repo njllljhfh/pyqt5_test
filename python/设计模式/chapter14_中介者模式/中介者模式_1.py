@@ -67,7 +67,9 @@ class Mediator(AbstractMediator):
     # 折价处理
     def _offSell(self):
         # 库房有多少卖多少
-        print(f"折价销售IBM电脑 {self._stock.getStockNumber()} 台")
+        number = self._stock.getStockNumber()
+        print(f"折价销售IBM电脑 {number} 台")
+        self._stock.decrease(number)
 
     # 清仓处理
     def _clearStock(self):

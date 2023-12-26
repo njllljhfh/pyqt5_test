@@ -2,6 +2,12 @@
 # __source__ = "《设计模式之禅》--- 策略模式 --- P-500"
 
 
+"""
+策略模式-定义:
+    Define a family of algorithms,encapsulate each one,and make them interchangeable.
+    定义一组算法， 将每个算法都封装起来， 并且使它们之间可以互换。
+"""
+
 # 抽象策略角色（妙计接口）
 class IStrategy(object):
 

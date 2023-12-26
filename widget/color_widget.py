@@ -2,14 +2,21 @@
 import sys
 
 from PyQt5.QtCore import Qt
-from PyQt5.QtGui import QColor, QPalette
+from PyQt5.QtGui import QColor, QPalette, QIcon
 from PyQt5.QtWidgets import QWidget, QColorDialog, QApplication, QVBoxLayout, QPushButton, QLabel, QLineEdit, \
     QHBoxLayout, QSizePolicy
 
 qss = """
 QWidget {
+    color: rgb(255, 255, 255);
+    background-color: rgb(69, 67, 91);
     font-size: 14px;
     font-family: sans-serif;
+}
+
+QPushButton {
+    color: rgb(0, 0, 0);
+    background-color: rgb(217,202,230);
 }
 
 QLabel {
@@ -82,7 +89,9 @@ class ExampleWidget(QWidget):
 
         self.setStyleSheet(qss)
 
-        self.setWindowTitle("颜色工具")
+        self.setWindowTitle("Color Palette")
+        icon_path = "E:\\Matrixtime\\workfile\\GitHub\\pyqt5_test\\widget\\icons\\调色板.png"
+        self.setWindowIcon(QIcon(icon_path))
         size = (370, 230)
         self.setFixedSize(*size)
 

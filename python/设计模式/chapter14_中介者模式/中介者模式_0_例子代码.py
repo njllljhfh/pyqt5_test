@@ -1,6 +1,11 @@
 # -*- coding:utf-8 -*-
 import random
 
+# 模拟数据库库存
+STOCK_DATA = {
+    'computer_number': 100
+}
+
 
 # 采购管理
 class Purchase(object):
@@ -34,27 +39,35 @@ class Stock(object):
 
     def __init__(self):
         # 刚开始有100台电脑
-        self._computer_number = 100
+        # self._computer_number = 100
+        self._stock_data = STOCK_DATA
+        pass
 
     # 库存增加
     def increase(self, number: int):
-        self._computer_number += number
-        print(f"库存数量为：{self._computer_number}")
+        # self._computer_number += number
+        # print(f"库存数量为：{self._computer_number}")
+        self._stock_data['computer_number'] += number
+        print(f"库存数量为：{self._stock_data['computer_number']}")
 
     # 库存降低
     def decrease(self, number: int):
-        self._computer_number -= number
-        print(f"库存数量为：{self._computer_number}")
+        # self._computer_number -= number
+        # print(f"库存数量为：{self._computer_number}")
+        self._stock_data['computer_number'] -= number
+        print(f"库存数量为：{self._stock_data['computer_number']}")
 
     # 获得库存数量
     def getStockNumber(self):
-        return self._computer_number
+        # return self._computer_number
+        return self._stock_data['computer_number']
 
     # 存货压力大了， 就要通知采购人员不要采购， 销售人员要尽快销售
     def clearStock(self):
         purchase = Purchase()
         sale = Sale()
-        print(f"清理存货数量为：{self._computer_number}")
+        # print(f"清理存货数量为：{self._computer_number}")
+        print(f"清理存货数量为：{self._stock_data['computer_number']}")
 
         # 要求折价销售
         sale.offSale()

@@ -46,7 +46,7 @@ class WhiteHuman(Human):
 
 # 抽象工厂类（抽象人类创建工厂）
 class AbstractHumanFactory(object):
-    def create_human(self, human: ClassVar[Human]):
+    def create_human(self, human: ClassVar[Human]) -> Human:
         pass
 
 

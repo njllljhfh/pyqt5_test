@@ -30,9 +30,9 @@ class WarningMessageBoxOne(QMessageBox):  # 警告
         self.btn_yes = self.addButton("确认", QMessageBox.YesRole)
         # self.no = self.box.addButton("取消", QMessageBox.NoRole)
         # QTimer.singleShot(1000, self.box.accept) # 定时关闭
-        # icon = QtGui.QIcon()
-        # icon.addPixmap(QtGui.QPixmap(":/icons/title.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        # self.box.setWindowIcon(icon)
+        # icons = QtGui.QIcon()
+        # icons.addPixmap(QtGui.QPixmap(":/icons/title.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        # self.box.setWindowIcon(icons)
         self.setStyleSheet(qss)
 
     # def msg_exec(self):
