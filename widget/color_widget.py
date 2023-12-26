@@ -1,5 +1,6 @@
 # -*- coding:utf-8 -*-
 import sys
+from functools import partial
 
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QColor, QPalette, QIcon
@@ -95,19 +96,23 @@ class ExampleWidget(QWidget):
         size = (370, 230)
         self.setFixedSize(*size)
 
-        self.set_color_btn.clicked.connect(self.open_color_dialog)
-        self.selected_color_btn.clicked.connect(self.open_color_dialog)
+        self.initial_color = QColor(255, 255, 255, 255)
+        self.set_color_btn.clicked.connect(partial(self.open_color_dialog, self.initial_color))
+        self.selected_color_btn.clicked.connect(partial(self.open_color_dialog, None))
 
         self.init_data()
 
     def init_data(self):
-        color = QColor(255, 255, 255, 255)
-        self.set_data(color)
+        self.set_data(self.initial_color)
 
-    def open_color_dialog(self):
+    def open_color_dialog(self, initial_color=None):
         try:
-            color_dialog = QColorDialog()
-            color: QColor = color_dialog.getColor()
+            # color_dialog = QColorDialog()
+            # color: QColor = color_dialog.getColor()
+            if initial_color is None:
+                color_ls = list(map(int, self.color_rgba_line_edit.text().split(',')))
+                initial_color = QColor(*color_ls)
+            color = QColorDialog.getColor(initial_color, self, 'Select Color')
             if color.isValid():
                 self.set_data(color)
                 print(f"确定-获取当前颜色")
