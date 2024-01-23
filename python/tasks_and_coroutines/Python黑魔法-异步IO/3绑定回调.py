@@ -29,8 +29,14 @@ def callback2(t, future):
 start = now()
 
 coroutine = do_some_work(11)
+# - - -
 loop = asyncio.get_event_loop()
 task = asyncio.ensure_future(coroutine)
+# - - -
+# python3.10写法
+# loop = asyncio.new_event_loop()
+# task = loop.create_task(coroutine)
+# - - -
 task.add_done_callback(callback)  # 先注册的回调函数，先执行
 task.add_done_callback(functools.partial(callback2, 3))  # 后注册的回调函数，后执行
 loop.run_until_complete(task)

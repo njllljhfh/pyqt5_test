@@ -29,6 +29,12 @@ start = now()
 coroutine1 = do_some_work(1)
 coroutine2 = do_some_work(2)
 coroutine3 = do_some_work(4)
+loop = asyncio.get_event_loop()
+
+# python3.10写法
+# loop = asyncio.new_event_loop()
+# asyncio.set_event_loop(loop)
+# -------------
 
 tasks = [
     asyncio.ensure_future(coroutine1),
@@ -36,7 +42,6 @@ tasks = [
     asyncio.ensure_future(coroutine3),
 ]
 
-loop = asyncio.get_event_loop()
 loop.run_until_complete(asyncio.wait(tasks))
 # loop.run_until_complete(asyncio.gather(*tasks))
 
